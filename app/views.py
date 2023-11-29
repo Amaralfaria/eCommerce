@@ -73,6 +73,22 @@ def usuario_by_id(request, id):
     elif request.method == 'DELETE':
         usuario.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(["POST"])
+def login_request(request):
+    if request.method == 'POST':
+        try:
+            userEmail = request.data["email"]
+            userPassword = request.data["password"]
+            usuario = Usuario.objects.get(email=userEmail, password=userPassword)
+        except Usuario.DoesNotExist:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        
+        return Response(status=status.HTTP_200_OK)
+
+
+
     
 @api_view(['GET', 'POST'])
 def lista_fornecedores(request):
