@@ -7,9 +7,12 @@ from rest_framework import status
 from rest_framework import  mixins
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
+from app.utils import get_jwt_tokens
+
+
 
 class AutenticacaoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
     serializer_class = AutenticacaoSerializer
     queryset = Usuario.objects.all()
 
@@ -20,6 +23,9 @@ class AutenticacaoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, vi
             usuario = Usuario.objects.get(email=userEmail, password=userPassword)
         except Usuario.DoesNotExist:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+
+        return JsonResponse(get_jwt_tokens(usuario))
         
         return Response(status=status.HTTP_200_OK)
 

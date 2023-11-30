@@ -9,8 +9,7 @@ paths:
       tags:
       - avaliacoes
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '200':
           content:
@@ -35,8 +34,7 @@ paths:
               $ref: '#/components/schemas/Avaliacao'
         required: true
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '200':
           content:
@@ -56,8 +54,7 @@ paths:
       tags:
       - avaliacoes
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '200':
           content:
@@ -88,8 +85,7 @@ paths:
               $ref: '#/components/schemas/Avaliacao'
         required: true
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '200':
           content:
@@ -108,8 +104,7 @@ paths:
       tags:
       - avaliacoes
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '204':
           description: No response body
@@ -119,8 +114,7 @@ paths:
       tags:
       - fornecedores
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '200':
           content:
@@ -145,8 +139,7 @@ paths:
               $ref: '#/components/schemas/Fornecedor'
         required: true
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '200':
           content:
@@ -166,8 +159,7 @@ paths:
       tags:
       - fornecedores
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '200':
           content:
@@ -198,8 +190,7 @@ paths:
               $ref: '#/components/schemas/Fornecedor'
         required: true
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '200':
           content:
@@ -218,8 +209,7 @@ paths:
       tags:
       - fornecedores
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '204':
           description: No response body
@@ -229,8 +219,7 @@ paths:
       tags:
       - produtos
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '200':
           content:
@@ -255,8 +244,7 @@ paths:
               $ref: '#/components/schemas/Produto'
         required: true
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '200':
           content:
@@ -276,8 +264,7 @@ paths:
       tags:
       - produtos
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '200':
           content:
@@ -308,8 +295,7 @@ paths:
               $ref: '#/components/schemas/Produto'
         required: true
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '200':
           content:
@@ -328,8 +314,7 @@ paths:
       tags:
       - produtos
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '204':
           description: No response body
@@ -339,8 +324,7 @@ paths:
       tags:
       - relatorios
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '200':
           content:
@@ -365,8 +349,7 @@ paths:
               $ref: '#/components/schemas/Relatorio'
         required: true
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '200':
           content:
@@ -386,8 +369,7 @@ paths:
       tags:
       - relatorios
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '200':
           content:
@@ -418,8 +400,7 @@ paths:
               $ref: '#/components/schemas/Relatorio'
         required: true
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '200':
           content:
@@ -438,8 +419,7 @@ paths:
       tags:
       - relatorios
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '204':
           description: No response body
@@ -565,8 +545,7 @@ paths:
       tags:
       - schema
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '200':
@@ -594,8 +573,7 @@ paths:
       tags:
       - usuarios
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '200':
           content:
@@ -620,8 +598,7 @@ paths:
               $ref: '#/components/schemas/Usuario'
         required: true
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '200':
           content:
@@ -641,8 +618,7 @@ paths:
       tags:
       - usuarios
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '200':
           content:
@@ -673,8 +649,7 @@ paths:
               $ref: '#/components/schemas/Usuario'
         required: true
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '200':
           content:
@@ -693,13 +668,79 @@ paths:
       tags:
       - usuarios
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '204':
           description: No response body
+  /usuarios/login:
+    post:
+      operationId: usuarios_login_create
+      tags:
+      - usuarios
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Autenticacao'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Autenticacao'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Autenticacao'
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Autenticacao'
+          description: ''
+  /usuarios/login/refresh:
+    post:
+      operationId: usuarios_login_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      tags:
+      - usuarios
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
 components:
   schemas:
+    Autenticacao:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          readOnly: true
+          title: Email address
+        password:
+          type: string
+          readOnly: true
+      required:
+      - email
+      - password
     Avaliacao:
       type: object
       properties:
@@ -788,6 +829,18 @@ components:
       required:
       - dados_de_uso
       - id
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          writeOnly: true
+      required:
+      - access
+      - refresh
     Usuario:
       type: object
       properties:
@@ -854,10 +907,7 @@ components:
       - password
       - username
   securitySchemes:
-    basicAuth:
+    jwtAuth:
       type: http
-      scheme: basic
-    cookieAuth:
-      type: apiKey
-      in: cookie
-      name: sessionid
+      scheme: bearer
+      bearerFormat: JWT
