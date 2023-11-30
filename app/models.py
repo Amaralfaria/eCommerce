@@ -37,14 +37,14 @@ class Usuario(AbstractUser):
         if not padrao_telefone.search(self.informacoes_de_contato):
             raise ValidationError({'informacoes_de_contato': 'Informações de contato devem incluir um número de telefone válido no formato 1234567890, (12) 34567890 ou 123456-7890.'})
 
-        if self.preferencias_de_busca:
-            try:
-                preferencias = json.loads(self.preferencias_de_busca)
+        # if self.preferencias_de_busca:
+        #     try:
+        #         preferencias = json.loads(self.preferencias_de_busca)
                 
-                if 'distancia_maxima' not in preferencias:
-                    raise ValidationError({'preferencias_de_busca': 'Distância máxima é obrigatória nas preferências de busca.'})
-            except json.JSONDecodeError:
-                raise ValidationError({'preferencias_de_busca': 'Formato JSON inválido.'})
+        #         if 'distancia_maxima' not in preferencias:
+        #             raise ValidationError({'preferencias_de_busca': 'Distância máxima é obrigatória nas preferências de busca.'})
+        #     except json.JSONDecodeError:
+        #         raise ValidationError({'preferencias_de_busca': 'Formato JSON inválido.'})
 
     def __str__(self):
         return self.username

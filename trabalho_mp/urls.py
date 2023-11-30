@@ -17,18 +17,25 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from app import views
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
+
+
+
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('produtos/',views.lista_produtos),
-    path('produtos/<int:id>', views.produto_by_id),
-    path('usuarios/', views.lista_usuarios), 
-    path('usuarios/<int:id>', views.usuario_by_id),
-    path('usuarios/login', views.login_request), 
-    path('fornecedores/', views.lista_fornecedores), 
-    path('fornecedores/<int:id>', views.fornecedor_by_id), 
-    path('avaliacoes/', views.lista_avaliacoes), 
-    path('avaliacoes/<int:id>', views.avaliacao_by_id), 
-    path('relatorios/', views.lista_relatorios), 
-    path('relatorios/<int:id>', views.relatorio_by_id) 
+    path("schema/", SpectacularAPIView.as_view(), name="schema"),
+    path("schema/docs/",SpectacularSwaggerView.as_view(url_name="schema")),
+    path("produtos/",views.ProdutoViewSet.as_view({"get":"get","post":"post"}), name="produtos"),
+    path("produtos/<int:id>", views.ProdutoViewSet.as_view({"get":"get_specific","put":"put","delete":"delete"})),
+    path("usuarios/", views.UsuarioViewSet.as_view({"get":"get","post":"post"}), name="usuarios"),
+    path('usuarios/<int:id>', views.UsuarioViewSet.as_view({"get":"get_specific","put":"put","delete":"delete"})),
+    path('fornecedores/', views.FornecedorViewSet.as_view({"get":"get","post":"post"})),
+    path('fornecedores/<int:id>', views.FornecedorViewSet.as_view({"get":"get_specific","put":"put","delete":"delete"})),
+    path('avaliacoes/', views.AvaliacaoViewSet.as_view({"get":"get","post":"post"})),
+    path('avaliacoes/<int:id>', views.AvaliacaoViewSet.as_view({"get":"get_specific","put":"put","delete":"delete"})),
+    path('relatorios/', views.RelatorioViewSet.as_view({"get":"get","post":"post"})),
+    path('relatorios/<int:id>', views.RelatorioViewSet.as_view({"get":"get_specific","put":"put","delete":"delete"})),
+    path('usuarios/login', views.AutenticacaoViewSet.as_view({"post":"post"})), 
 ]

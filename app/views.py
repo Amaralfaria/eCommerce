@@ -1,83 +1,19 @@
 from django.http import JsonResponse
 from .models import Produto
 from .serializers import *
-from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from django.db.models import Q
 from rest_framework import status
+from rest_framework import  mixins
+from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
 
-@api_view(['GET','POST'])
-def lista_produtos(request):
+class AutenticacaoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet):
+    permission_classes = [IsAuthenticated]
+    serializer_class = AutenticacaoSerializer
+    queryset = Usuario.objects.all()
 
-    if request.method == 'GET':
-        produtos = Produto.objects.all()
-        serializer = ProdutoSerializer(produtos, many=True)
-        return JsonResponse({"produtos":serializer.data})
-    elif request.method == 'POST':
-        serializer = ProdutoSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data,status=status.HTTP_201_CREATED)
-
-
-@api_view(['GET','PUT','DELETE'])
-def produto_by_id(request, id):
-
-    try:
-        produto = Produto.objects.get(pk=id)
-    except Produto.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-    
-    if request.method == 'GET':
-        serializer = ProdutoSerializer(produto)
-        return Response(serializer.data)
-    elif request.method == 'PUT':
-        serializer = ProdutoSerializer(produto, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
-    elif request.method == 'DELETE':
-        produto.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-    
-@api_view(['GET', 'POST'])
-def lista_usuarios(request):
-
-    if request.method == 'GET':
-        usuarios = Usuario.objects.all()
-        serializer = UsuarioSerializer(usuarios, many=True)
-        return JsonResponse({"usuarios": serializer.data})
-    elif request.method == 'POST':
-        serializer = UsuarioSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-@api_view(['GET', 'PUT', 'DELETE'])
-def usuario_by_id(request, id):
-
-    try:
-        usuario = Usuario.objects.get(pk=id)
-    except Usuario.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-    
-    if request.method == 'GET':
-        serializer = UsuarioSerializer(usuario)
-        return Response(serializer.data)
-    elif request.method == 'PUT':
-        serializer = UsuarioSerializer(usuario, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    elif request.method == 'DELETE':
-        usuario.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-@api_view(["POST"])
-def login_request(request):
-    if request.method == 'POST':
+    def post(self,request):
         try:
             userEmail = request.data["email"]
             userPassword = request.data["password"]
@@ -89,107 +25,272 @@ def login_request(request):
 
 
 
-    
-@api_view(['GET', 'POST'])
-def lista_fornecedores(request):
+class ProdutoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet):
+    permission_classes = [IsAuthenticated, ] 
+    serializer_class = ProdutoSerializer
+    queryset = Produto.objects.all()
 
-    if request.method == 'GET':
+    def get(self, request):
+        produtos = Produto.objects.all()
+
+        nomeProduto = request.query_params.get('nomeProduto',None)
+        precoMaximo = request.query_params.get('precoMaximo',None)
+        precoMinimo = request.query_params.get('precoMinimo',None)
+        # fornecedorProduto = request.query_params.get('fornecedor',None)
+        raio = request.query_params.get('raio',None)
+
+        if nomeProduto:
+            produtos = produtos.filter(Q(nome__icontains=nomeProduto))
+        if precoMaximo:
+            print(precoMaximo)
+            produtos = produtos.filter(Q(preco__lte=precoMaximo))
+        if precoMinimo:
+            produtos = produtos.filter(Q(preco__gte=precoMinimo))
+
+
+        serializer = ProdutoSerializer(produtos, many=True)
+        return JsonResponse({"produtos":serializer.data})
+    
+    def post(self, request):
+        serializer = ProdutoSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data,status=status.HTTP_201_CREATED)
+        
+    def get_specific(self, request, id):
+        try:
+            produto = Produto.objects.get(pk=id)
+        except Produto.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = ProdutoSerializer(produto)
+        return Response(serializer.data)
+    
+    def put(self, request, id):
+        try:
+            produto = Produto.objects.get(pk=id)
+        except Produto.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = ProdutoSerializer(produto, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+    
+    def delete(self, request, id):
+        try:
+            produto = Produto.objects.get(pk=id)
+        except Produto.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+        produto.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
+
+
+
+
+class FornecedorViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet):
+    permission_classes = [IsAuthenticated, ] 
+    serializer_class = FornecedorSerializer
+    queryset = Fornecedor.objects.all()
+
+    def get(self, request):
         fornecedores = Fornecedor.objects.all()
         serializer = FornecedorSerializer(fornecedores, many=True)
         return JsonResponse({"fornecedores": serializer.data})
-    elif request.method == 'POST':
+    
+    def post(self, request):
         serializer = FornecedorSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-@api_view(['GET', 'PUT', 'DELETE'])
-def fornecedor_by_id(request, id):
-
-    try:
-        fornecedor = Fornecedor.objects.get(pk=id)
-    except Fornecedor.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-    
-    if request.method == 'GET':
+        
+    def get_specific(self, request, id):
+        try:
+            fornecedor = Fornecedor.objects.get(pk=id)
+        except Fornecedor.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
         serializer = FornecedorSerializer(fornecedor)
         return Response(serializer.data)
-    elif request.method == 'PUT':
+    
+    def put(self, request, id):
+        try:
+            fornecedor = Fornecedor.objects.get(pk=id)
+        except Fornecedor.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
         serializer = FornecedorSerializer(fornecedor, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    elif request.method == 'DELETE':
+    
+    def delete(self, request, id):
+        try:
+            fornecedor = Fornecedor.objects.get(pk=id)
+        except Fornecedor.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
         fornecedor.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+
+class UsuarioViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet):
+    permission_classes = [IsAuthenticated, ] 
+    serializer_class = UsuarioSerializer
+    queryset = Usuario.objects.all()
+        
+    def get(self,request):
+        usuarios = Usuario.objects.all()
+        serializer = UsuarioSerializer(usuarios, many=True)
+        return JsonResponse({"usuarios": serializer.data})
+    
+    def post(self,request):
+        serializer = UsuarioSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
+    def get_specific(self,request, id):
+        try:
+            usuario = Usuario.objects.get(pk=id)
+        except Usuario.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+    
+        serializer = UsuarioSerializer(usuario)
+        return Response(serializer.data)
+    
+    def put(self,request, id):
+        try:
+            usuario = Usuario.objects.get(pk=id)
+        except Usuario.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        serializer = UsuarioSerializer(usuario, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def delete(self,request, id):
+        try:
+            usuario = Usuario.objects.get(pk=id)
+        except Usuario.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        usuario.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)     
+    
 
 
-@api_view(['GET', 'POST'])
-def lista_avaliacoes(request):
 
-    if request.method == 'GET':
+    
+
+class AvaliacaoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet):
+    permission_classes = [IsAuthenticated, ] 
+    serializer_class = AvaliacaoSerializer
+    queryset = Avaliacao.objects.all()
+        
+    def get(self,request):
         avaliacoes = Avaliacao.objects.all()
         serializer = AvaliacaoSerializer(avaliacoes, many=True)
         return JsonResponse({"avaliacoes": serializer.data})
-    elif request.method == 'POST':
+    
+    def post(self,request):
         serializer = AvaliacaoSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
 
-@api_view(['GET', 'PUT', 'DELETE'])
-def avaliacao_by_id(request, id):
 
-    try:
-        avaliacao = Avaliacao.objects.get(pk=id)
-    except Avaliacao.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        
+    def get_specific(self,request, id):
+        try:
+            avaliacao = Avaliacao.objects.get(pk=id)
+        except Avaliacao.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
     
-    if request.method == 'GET':
         serializer = AvaliacaoSerializer(avaliacao)
         return Response(serializer.data)
-    elif request.method == 'PUT':
+    
+    def put(self,request, id):
+        try:
+            avaliacao = Avaliacao.objects.get(pk=id)
+        except Avaliacao.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
         serializer = AvaliacaoSerializer(avaliacao, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    elif request.method == 'DELETE':
+    
+    def delete(self,request, id):
+        try:
+            avaliacao = Avaliacao.objects.get(pk=id)
+        except Avaliacao.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
         avaliacao.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-@api_view(['GET', 'POST'])
-def lista_relatorios(request):
 
-    if request.method == 'GET':
+class RelatorioViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet):
+    permission_classes = [IsAuthenticated, ] 
+    serializer_class = RelatorioSerializer
+    queryset = Relatorio.objects.all()
+        
+    def get(self,request):
         relatorios = Relatorio.objects.all()
         serializer = RelatorioSerializer(relatorios, many=True)
         return JsonResponse({"relatorios": serializer.data})
-    elif request.method == 'POST':
+    
+    def post(self,request):
         serializer = RelatorioSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
 
-@api_view(['GET', 'PUT', 'DELETE'])
-def relatorio_by_id(request, id):
 
-    try:
-        relatorio = Relatorio.objects.get(pk=id)
-    except Relatorio.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        
+    def get_specific(self,request, id):
+        try:
+            relatorio = Relatorio.objects.get(pk=id)
+        except Relatorio.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
     
-    if request.method == 'GET':
         serializer = RelatorioSerializer(relatorio)
         return Response(serializer.data)
-    elif request.method == 'PUT':
+    
+    def put(self,request, id):
+        try:
+            relatorio = Relatorio.objects.get(pk=id)
+        except Relatorio.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
         serializer = RelatorioSerializer(relatorio, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    elif request.method == 'DELETE':
+    def delete(self,request, id):
+        try:
+            relatorio = Relatorio.objects.get(pk=id)
+        except Relatorio.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
         relatorio.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+
+
+
+
 
