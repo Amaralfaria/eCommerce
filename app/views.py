@@ -32,7 +32,7 @@ class AutenticacaoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, vi
 
 
 class ProdutoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet):
-    permission_classes = [IsAuthenticated, ] 
+    # permission_classes = [IsAuthenticated, ] 
     serializer_class = ProdutoSerializer
     queryset = Produto.objects.all()
 
@@ -99,7 +99,7 @@ class ProdutoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewset
 
 
 class FornecedorViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet):
-    permission_classes = [IsAuthenticated, ] 
+    # permission_classes = [IsAuthenticated, ] 
     serializer_class = FornecedorSerializer
     queryset = Fornecedor.objects.all()
 
@@ -197,7 +197,7 @@ class UsuarioViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewset
     
 
 class AvaliacaoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet):
-    permission_classes = [IsAuthenticated, ] 
+    # permission_classes = [IsAuthenticated, ] 
     serializer_class = AvaliacaoSerializer
     queryset = Avaliacao.objects.all()
         
