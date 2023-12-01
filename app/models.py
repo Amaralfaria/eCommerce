@@ -1,15 +1,37 @@
+from typing import Any
 from django.db import models
-from django.contrib.auth.models import AbstractUser, Group, Permission
+from django.contrib.auth.models import AbstractUser, Group, Permission, AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
 import re
 import json
 
 
-class Usuario(AbstractUser):
+class UsuarioManager(BaseUserManager):
+
+    def create_user(self, **kwargs):
+        email = self.normalize_email(email)
+        user = self.model(email=email, username=kwargs['username'])
+        user.set_password(kwargs['password'])
+        user.save(using=self._db)
+
+        return user
+    
+
+class Usuario(AbstractBaseUser, PermissionsMixin):
     # Adicionando campos extras
+    email = models.EmailField(max_length=255, unique=True)
+    username = models.CharField(max_length=255, unique=True)
+    # is_active = models.BooleanField(default=True)
+    # is_staff = models.BooleanField(default=False)
     preferencias_de_busca = models.JSONField(null=True, blank=True)
-    informacoes_de_contato = models.TextField()
+    telefone = models.TextField()
+
+    objects = UsuarioManager()
+
+    USERNAME_FIELD = 'username'
+    REQUIRED_FIELDS = ['email']
+
 
     # Alterações para evitar conflitos de relacionamento
     groups = models.ManyToManyField(
@@ -31,11 +53,12 @@ class Usuario(AbstractUser):
 
     def clean(self):
         super().clean()
+        
 
         # Validar se o telefone está presente nas informações de contato
-        padrao_telefone = re.compile(r'(\(\d{2}\)\s?)?\d{6}-?\d{4}\b')
-        if not padrao_telefone.search(self.informacoes_de_contato):
-            raise ValidationError({'informacoes_de_contato': 'Informações de contato devem incluir um número de telefone válido no formato 1234567890, (12) 34567890 ou 123456-7890.'})
+        # padrao_telefone = re.compile(r'(\(\d{2}\)\s?)?\d{6}-?\d{4}\b')
+        # if not padrao_telefone.search(self.informacoes_de_contato):
+        #     raise ValidationError({'informacoes_de_contato': 'Informações de contato devem incluir um número de telefone válido no formato 1234567890, (12) 34567890 ou 123456-7890.'})
 
         # if self.preferencias_de_busca:
         #     try:

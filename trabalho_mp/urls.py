@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path
 from app import views
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
-from rest_framework_simplejwt.views import TokenRefreshView
+from rest_framework_simplejwt.views import TokenRefreshView, TokenObtainPairView, TokenVerifyView
 
 
 
@@ -38,6 +38,8 @@ urlpatterns = [
     path('avaliacoes/<int:id>', views.AvaliacaoViewSet.as_view({"get":"get_specific","put":"put","delete":"delete"})),
     path('relatorios/', views.RelatorioViewSet.as_view({"get":"get","post":"post"})),
     path('relatorios/<int:id>', views.RelatorioViewSet.as_view({"get":"get_specific","put":"put","delete":"delete"})),
-    path('usuarios/login', views.AutenticacaoViewSet.as_view({"post":"post"})), 
     path('usuarios/login/refresh', TokenRefreshView.as_view()),
+    path('token/', TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path('tokenverify/', TokenVerifyView.as_view(), name="token_verify"),
+    path('token/refresh', TokenRefreshView.as_view(), name="token_refresh"),
 ]

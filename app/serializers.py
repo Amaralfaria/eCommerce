@@ -10,19 +10,14 @@ class FornecedorSerializer(serializers.ModelSerializer):
 class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
-        fields = ['id','username', 'first_name', 'last_name', 'email', 'password','is_active', 'is_staff', 'is_superuser', 'date_joined',
-    'groups', 'user_permissions',
-                  'preferencias_de_busca', 'informacoes_de_contato']
+        fields = ['id','username', 'email', 'password',
+                  'telefone', 'telefone']
         read_only_fields = ['id']
 
-        extra_kwargs = {
-            'is_active': {'required': False},
-            'is_staff': {'required': False},
-            'is_superuser': {'required': False},
-            'date_joined': {'required': False},
-            'groups': {'required': False},
-            'user_permissions': {'required': False}
-        }
+
+    def create(self, validated_data):
+        user = Usuario.objects.create_user(**validated_data)
+        return user
 
 
         
