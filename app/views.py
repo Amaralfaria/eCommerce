@@ -197,11 +197,12 @@ class UsuarioViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewset
     
 
 class AvaliacaoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet):
-    # permission_classes = [IsAuthenticated, ] 
+    permission_classes = [IsAuthenticated, ] 
     serializer_class = AvaliacaoSerializer
     queryset = Avaliacao.objects.all()
         
     def get(self,request):
+        print(request.user.id)
         avaliacoes = Avaliacao.objects.all()
         serializer = AvaliacaoSerializer(avaliacoes, many=True)
         return JsonResponse({"avaliacoes": serializer.data})
