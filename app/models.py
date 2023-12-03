@@ -7,30 +7,19 @@ import re
 import json
 
 
-class UsuarioManager(BaseUserManager):
-
-    def create_user(self, **kwargs):
-        email = self.normalize_email(email)
-        user = self.model(email=email, username=kwargs['username'])
-        user.set_password(kwargs['password'])
-        user.save(using=self._db)
-
-        return user
+class Usuario(AbstractUser):
+    is_cliente = models.BooleanField(default=False)
+    is_fornecedor = models.BooleanField(default=False)
+    telefone = models.TextField()
+    
+        
     
 
-class Usuario(AbstractBaseUser, PermissionsMixin):
+class Cliente(models.Model):
     # Adicionando campos extras
-    email = models.EmailField(max_length=255, unique=True)
-    username = models.CharField(max_length=255, unique=True)
-    # is_active = models.BooleanField(default=True)
-    # is_staff = models.BooleanField(default=False)
+    cliente_user = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='cliente_user', null=True)
     preferencias_de_busca = models.JSONField(null=True, blank=True)
-    telefone = models.TextField()
-
-    objects = UsuarioManager()
-
-    USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['email']
+    
 
 
     # Alterações para evitar conflitos de relacionamento
@@ -52,8 +41,8 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     )
 
     def clean(self):
-        super().clean()
-        
+        # super().clean()
+        pass
 
         # Validar se o telefone está presente nas informações de contato
         # padrao_telefone = re.compile(r'(\(\d{2}\)\s?)?\d{6}-?\d{4}\b')
@@ -70,13 +59,14 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
         #         raise ValidationError({'preferencias_de_busca': 'Formato JSON inválido.'})
 
     def __str__(self):
-        return self.username
+        return self.credentials
 
 
 class Fornecedor(models.Model):
+    forncedor_user = models.OneToOneField(Usuario, related_name='forncedor_user', on_delete=models.CASCADE)
     nome_do_negocio = models.CharField(max_length=255)
     endereco = models.CharField(max_length=255)
-    detalhes_de_contato = models.TextField()
+    email = models.EmailField(max_length=255, unique=True)
     latitude = models.DecimalField(max_digits=9, decimal_places=6)
     longitude = models.DecimalField(max_digits=9, decimal_places=6)
 
@@ -142,7 +132,7 @@ class Produto(models.Model):
 
 
 class Avaliacao(models.Model):
-    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='avaliacoes')
+    usuario = models.ForeignKey(Cliente, on_delete=models.CASCADE, related_name='avaliacoes')
     produto = models.ForeignKey(Produto, on_delete=models.CASCADE, related_name='avaliacoes')
     nota = models.IntegerField()
     comentario = models.TextField()
