@@ -273,7 +273,7 @@ class ClienteViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewset
     
 
 class AvaliacaoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet):
-    permission_classes = [IsAuthenticated, ] 
+    permission_classes = [AllowAny, ] 
     serializer_class = AvaliacaoSerializer
     queryset = Avaliacao.objects.all()
         
@@ -324,7 +324,7 @@ class AvaliacaoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, views
 
 
 class RelatorioViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet):
-    permission_classes = [IsAuthenticated, ] 
+    permission_classes = [AllowAny, ] 
     serializer_class = RelatorioSerializer
     queryset = Relatorio.objects.all()
         
