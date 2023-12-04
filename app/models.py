@@ -1,5 +1,6 @@
+from typing import Any
 from django.db import models
-from django.contrib.auth.models import AbstractUser, Group, Permission
+from django.contrib.auth.models import AbstractUser, Group, Permission, AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
 import re
@@ -7,9 +8,19 @@ import json
 
 
 class Usuario(AbstractUser):
+    is_cliente = models.BooleanField(default=False)
+    is_fornecedor = models.BooleanField(default=False)
+    telefone = models.TextField()
+    
+        
+    
+
+class Cliente(models.Model):
     # Adicionando campos extras
+    cliente_user = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='cliente_user', null=True)
     preferencias_de_busca = models.JSONField(null=True, blank=True)
-    informacoes_de_contato = models.TextField()
+    
+
 
     # Alterações para evitar conflitos de relacionamento
     groups = models.ManyToManyField(
@@ -30,12 +41,13 @@ class Usuario(AbstractUser):
     )
 
     def clean(self):
-        super().clean()
+        # super().clean()
+        pass
 
         # Validar se o telefone está presente nas informações de contato
-        padrao_telefone = re.compile(r'(\(\d{2}\)\s?)?\d{6}-?\d{4}\b')
-        if not padrao_telefone.search(self.informacoes_de_contato):
-            raise ValidationError({'informacoes_de_contato': 'Informações de contato devem incluir um número de telefone válido no formato 1234567890, (12) 34567890 ou 123456-7890.'})
+        # padrao_telefone = re.compile(r'(\(\d{2}\)\s?)?\d{6}-?\d{4}\b')
+        # if not padrao_telefone.search(self.informacoes_de_contato):
+        #     raise ValidationError({'informacoes_de_contato': 'Informações de contato devem incluir um número de telefone válido no formato 1234567890, (12) 34567890 ou 123456-7890.'})
 
         # if self.preferencias_de_busca:
         #     try:
@@ -47,13 +59,14 @@ class Usuario(AbstractUser):
         #         raise ValidationError({'preferencias_de_busca': 'Formato JSON inválido.'})
 
     def __str__(self):
-        return self.username
+        return self.credentials
 
 
 class Fornecedor(models.Model):
+    forncedor_user = models.OneToOneField(Usuario, related_name='forncedor_user', on_delete=models.CASCADE)
     nome_do_negocio = models.CharField(max_length=255)
     endereco = models.CharField(max_length=255)
-    detalhes_de_contato = models.TextField()
+    email = models.EmailField(max_length=255, unique=True)
     latitude = models.DecimalField(max_digits=9, decimal_places=6)
     longitude = models.DecimalField(max_digits=9, decimal_places=6)
 
@@ -119,7 +132,7 @@ class Produto(models.Model):
 
 
 class Avaliacao(models.Model):
-    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='avaliacoes')
+    usuario = models.ForeignKey(Cliente, on_delete=models.CASCADE, related_name='avaliacoes')
     produto = models.ForeignKey(Produto, on_delete=models.CASCADE, related_name='avaliacoes')
     nota = models.IntegerField()
     comentario = models.TextField()

@@ -6,28 +6,8 @@ from django.db.models import Q
 from rest_framework import status
 from rest_framework import  mixins
 from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated
-from app.utils import get_jwt_tokens
-
-
-
-class AutenticacaoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet):
-    # permission_classes = [IsAuthenticated]
-    serializer_class = AutenticacaoSerializer
-    queryset = Usuario.objects.all()
-
-    def post(self,request):
-        try:
-            userEmail = request.data["email"]
-            userPassword = request.data["password"]
-            usuario = Usuario.objects.get(email=userEmail, password=userPassword)
-        except Usuario.DoesNotExist:
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
-
-
-        return JsonResponse(get_jwt_tokens(usuario))
-        
-        return Response(status=status.HTTP_200_OK)
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly, AllowAny
+from django.db import transaction
 
 
 
@@ -95,11 +75,57 @@ class ProdutoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewset
         return Response(status=status.HTTP_204_NO_CONTENT)
     
 
+class UsuarioViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet):
+    permission_classes = [AllowAny,]
+    serializer_class = UsuarioSerializer
+    queryset = Usuario.objects.all()
 
+    def get(self, request):
+        usuarios = Usuario.objects.all()
+        serializer = UsuarioSerializer(usuarios, many=True)
+        return JsonResponse({"Usuarios": serializer.data})
+    
+
+    def post(self, request):
+        serializer = UsuarioSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    
+    def get_specific(self, request, id):
+        try:
+            usuario = Usuario.objects.get(pk=id)
+        except Usuario.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = UsuarioSerializer(usuario)
+        return Response(serializer.data)
+    
+    def put(self, request, id):
+        try:
+            usuario = Usuario.objects.get(pk=id)
+        except Usuario.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = UsuarioSerializer(usuario, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def delete(self, request, id):
+        try:
+            usuario = Usuario.objects.get(pk=id)
+        except Usuario.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+        usuario.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class FornecedorViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet):
-    # permission_classes = [IsAuthenticated, ] 
+    permission_classes = [IsAuthenticatedOrReadOnly, ] 
     serializer_class = FornecedorSerializer
     queryset = Fornecedor.objects.all()
 
@@ -108,11 +134,39 @@ class FornecedorViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, view
         serializer = FornecedorSerializer(fornecedores, many=True)
         return JsonResponse({"fornecedores": serializer.data})
     
+
     def post(self, request):
+        # serializer = FornecedorSerializer(data=request.data)
+        # if serializer.is_valid():
+        #     serializer.save()
+        #     return Response(serializer.data, status=status.HTTP_201_CREATED)
+        # fields_usuario = ['username','email','telefone','password']
+        # fields_fornecedor = ['nome_do_negocio', 'endereco', 'latitude', 'longitude']
+
+        # dict_usuario = {key: value for key, value in request.data.items() if key in fields_usuario}
+
+        # dict_fornecedor = {key: value for key, value in request.data.items() if key in fields_fornecedor}
+
+        # dict_usuario['is_cliente'] = True
+
+        # serializer_usuario = UsuarioSerializer(data=dict_usuario)
+        # serializer_fornecedor = FornecedorSerializer(data=dict_fornecedor)
+        # if serializer_usuario.is_valid() and serializer_fornecedor.is_valid():
+        #     user = serializer_usuario.save()
+        #     fornecedor = serializer_fornecedor.save()
+        #     fornecedor.fornecedor_user = user
+
+        #     return Response(dict(request.data), status=status.HTTP_201_CREATED)
         serializer = FornecedorSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            fornecedor = serializer.save()
+            fornecedor.fornecedor_user = request.user
+
+            return Response(dict(request.data), status=status.HTTP_201_CREATED)
+
+
+
+
         
     def get_specific(self, request, id):
         try:
@@ -145,38 +199,60 @@ class FornecedorViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, view
         return Response(status=status.HTTP_204_NO_CONTENT)
     
 
-class UsuarioViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet):
-    permission_classes = [IsAuthenticated, ] 
-    serializer_class = UsuarioSerializer
-    queryset = Usuario.objects.all()
+class ClienteViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet):
+    permission_classes = [IsAuthenticatedOrReadOnly, ] 
+    serializer_class = ClienteSerializer
+    queryset = Cliente.objects.all()
         
     def get(self,request):
-        usuarios = Usuario.objects.all()
-        serializer = UsuarioSerializer(usuarios, many=True)
+        usuarios = Cliente.objects.all()
+        serializer = ClienteSerializer(usuarios, many=True)
         return JsonResponse({"usuarios": serializer.data})
     
+    
     def post(self,request):
-        serializer = UsuarioSerializer(data=request.data)
+
+        # fields_usuario = ['username','email','telefone','password']
+        # fields_cliente = ['preferencias_de_busca']
+
+        # dict_usuario = {key: value for key, value in request.data.items() if key in fields_usuario}
+
+        # dict_cliente = {key: value for key, value in request.data.items() if key in fields_cliente}
+
+        # dict_usuario['is_cliente'] = True
+
+        # serializer_usuario = UsuarioSerializer(data=dict_usuario)
+        # serializer_cliente = ClienteSerializer(data=dict_cliente)
+        # if serializer_usuario.is_valid() and serializer_cliente.is_valid():
+        #     user = serializer_usuario.save()
+        #     client = serializer_cliente.save()
+        #     client.cliente_user = user
+
+        #     return Response(dict(request.data), status=status.HTTP_201_CREATED)
+        serializer = ClienteSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            cliente = serializer.save()
+            cliente.cliente_user = request.user
+
+            return Response(dict(request.data), status=status.HTTP_201_CREATED)
+        
         
     def get_specific(self,request, id):
         try:
-            usuario = Usuario.objects.get(pk=id)
-        except Usuario.DoesNotExist:
+            cliente = Cliente.objects.get(pk=id)
+        except Cliente.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
     
-        serializer = UsuarioSerializer(usuario)
+        serializer = ClienteSerializer(cliente)
         return Response(serializer.data)
     
     def put(self,request, id):
         try:
-            usuario = Usuario.objects.get(pk=id)
-        except Usuario.DoesNotExist:
+            cliente = Cliente.objects.get(pk=id)
+        except Cliente.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        serializer = UsuarioSerializer(usuario, data=request.data, partial=True)
+        serializer = ClienteSerializer(cliente, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -184,11 +260,11 @@ class UsuarioViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewset
     
     def delete(self,request, id):
         try:
-            usuario = Usuario.objects.get(pk=id)
-        except Usuario.DoesNotExist:
+            cliente = Cliente.objects.get(pk=id)
+        except Cliente.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        usuario.delete()
+        cliente.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)     
     
 
@@ -253,6 +329,7 @@ class RelatorioViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, views
     queryset = Relatorio.objects.all()
         
     def get(self,request):
+        print(request.user.id)
         relatorios = Relatorio.objects.all()
         serializer = RelatorioSerializer(relatorios, many=True)
         return JsonResponse({"relatorios": serializer.data})
