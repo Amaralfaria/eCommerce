@@ -2,3 +2,4 @@ Django==4.2.7
 djangorestframework==3.14.0
 drf-spectacular
 djangorestframework-simplejwt
+django-cors-headers
