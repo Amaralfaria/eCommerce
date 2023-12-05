@@ -7,12 +7,12 @@ from rest_framework import status
 from rest_framework import  mixins
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly, AllowAny
-from django.db import transaction
+
 
 
 
 class ProdutoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet):
-    # permission_classes = [IsAuthenticated, ] 
+    permission_classes = [IsAuthenticatedOrReadOnly, ] 
     serializer_class = ProdutoSerializer
     queryset = Produto.objects.all()
 
@@ -38,7 +38,10 @@ class ProdutoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewset
         return JsonResponse({"produtos":serializer.data})
     
     def post(self, request):
-        serializer = ProdutoSerializer(data=request.data)
+        data = request.data
+        print(request.user)
+        data["fornecedor"] = Fornecedor.objects.get(fornecedor_user=request.user).id
+        serializer = ProdutoSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data,status=status.HTTP_201_CREATED)
@@ -157,12 +160,13 @@ class FornecedorViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, view
         #     fornecedor.fornecedor_user = user
 
         #     return Response(dict(request.data), status=status.HTTP_201_CREATED)
-        serializer = FornecedorSerializer(data=request.data)
+        data = request.data
+        data["fornecedor_user"] = request.user.id
+        serializer = FornecedorSerializer(data=data)
         if serializer.is_valid():
-            fornecedor = serializer.save()
-            fornecedor.fornecedor_user = request.user
+            serializer.save()
 
-            return Response(dict(request.data), status=status.HTTP_201_CREATED)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 
@@ -229,12 +233,13 @@ class ClienteViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewset
         #     client.cliente_user = user
 
         #     return Response(dict(request.data), status=status.HTTP_201_CREATED)
-        serializer = ClienteSerializer(data=request.data)
+        data = request.data
+        data["cliente_user"] = request.user.id
+        serializer = ClienteSerializer(data=data)
         if serializer.is_valid():
-            cliente = serializer.save()
-            cliente.cliente_user = request.user
+            serializer.save()
 
-            return Response(dict(request.data), status=status.HTTP_201_CREATED)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         
         
     def get_specific(self,request, id):
@@ -273,7 +278,7 @@ class ClienteViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewset
     
 
 class AvaliacaoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet):
-    permission_classes = [AllowAny, ] 
+    permission_classes = [IsAuthenticatedOrReadOnly, ] 
     serializer_class = AvaliacaoSerializer
     queryset = Avaliacao.objects.all()
         
@@ -284,7 +289,9 @@ class AvaliacaoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, views
         return JsonResponse({"avaliacoes": serializer.data})
     
     def post(self,request):
-        serializer = AvaliacaoSerializer(data=request.data)
+        data = request.data
+        data["cliente"] = Cliente.objects.get(cliente_user=request.user).id
+        serializer = AvaliacaoSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -300,6 +307,8 @@ class AvaliacaoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, views
     
         serializer = AvaliacaoSerializer(avaliacao)
         return Response(serializer.data)
+    
+
     
     def put(self,request, id):
         try:

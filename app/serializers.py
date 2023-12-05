@@ -4,15 +4,15 @@ from .models import *
 class FornecedorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Fornecedor
-        fields = ['nome_do_negocio', 'endereco', 'latitude', 'longitude']
-        # read_only_fields = ['id']
+        fields = ['id','nome_do_negocio', 'endereco', 'latitude', 'longitude','fornecedor_user']
+        read_only_fields = ['id','fornecedor_user']
 
 class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
-        fields = ['username', 'email', 'password',
+        fields = ['id','username', 'email', 'password',
                   'telefone','is_cliente','is_fornecedor']
-        # read_only_fields = ['id']
+        read_only_fields = ['id']
 
 
     def create(self, validated_data):
@@ -22,29 +22,29 @@ class UsuarioSerializer(serializers.ModelSerializer):
 class ClienteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cliente
-        fields = ['preferencias_de_busca']
-        # read_only_fields = ['id']
+        fields = ['id','preferencias_de_busca','cliente_user']
+        read_only_fields = ['id','cliente_user']
 
         
 
 class ProdutoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Produto
-        fields = ['nome', 'descricao', 'preco', 'categoria', 'fornecedor']
-        # read_only_fields = ['id']
+        fields = ['id','nome', 'descricao', 'preco', 'categoria', 'fornecedor']
+        read_only_fields = ['id','fornecedor']
 
 class AvaliacaoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Avaliacao
-        fields = ['usuario', 'produto', 'nota', 'comentario']
-        # read_only_fields = ['id']
+        fields = ['id','cliente', 'produto', 'nota', 'comentario']
+        read_only_fields = ['id','cliente']
 
 
 class RelatorioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Relatorio
-        fields = ['dados_de_uso']
-        # read_only_fields = ['id']
+        fields = ['id','dados_de_uso']
+        read_only_fields = ['id']
 
 class AutenticacaoSerializer(serializers.ModelSerializer):
     class Meta:

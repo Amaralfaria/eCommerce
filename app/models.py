@@ -63,7 +63,7 @@ class Cliente(models.Model):
 
 
 class Fornecedor(models.Model):
-    forncedor_user = models.OneToOneField(Usuario, related_name='forncedor_user', on_delete=models.CASCADE)
+    fornecedor_user = models.OneToOneField(Usuario, related_name='forncedor_user', on_delete=models.CASCADE)
     nome_do_negocio = models.CharField(max_length=255)
     endereco = models.CharField(max_length=255)
     email = models.EmailField(max_length=255, unique=True)
@@ -132,7 +132,7 @@ class Produto(models.Model):
 
 
 class Avaliacao(models.Model):
-    usuario = models.ForeignKey(Cliente, on_delete=models.CASCADE, related_name='avaliacoes')
+    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, related_name='avaliacoes')
     produto = models.ForeignKey(Produto, on_delete=models.CASCADE, related_name='avaliacoes')
     nota = models.IntegerField()
     comentario = models.TextField()
