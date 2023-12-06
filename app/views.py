@@ -7,6 +7,7 @@ from rest_framework import status
 from rest_framework import  mixins
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly, AllowAny
+from drf_spectacular.utils import extend_schema
 
 
 
@@ -17,6 +18,8 @@ class ProdutoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewset
     serializer_class = ProdutoSerializer
     queryset = Produto.objects.all()
 
+
+    @extend_schema(description='Faz uma query de todos os produtos e faz uma filtragem baseada nos parametros baseados pela URL. Parametros: nomeProduto,precoMaximo,precoMinimo. Depois adicionar: raio, latitude e longitude do cliente')
     def get(self, request):
         produtos = Produto.objects.all()
 
@@ -38,6 +41,8 @@ class ProdutoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewset
         serializer = ProdutoSerializer(produtos, many=True)
         return JsonResponse({"produtos":serializer.data})
     
+
+    @extend_schema(description='Cria um produto, é necessario estar logado com o usuario do fornecedor que está adicionando o produto. Não é necesario incluir o campo do fornecedor, ele será obtido pela autenticação')
     def post(self, request):
         data = request.data
         print(request.user)
@@ -47,6 +52,7 @@ class ProdutoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewset
             serializer.save()
             return Response(serializer.data,status=status.HTTP_201_CREATED)
         
+    
     def get_specific(self, request, id):
         try:
             produto = Produto.objects.get(pk=id)
@@ -84,12 +90,14 @@ class UsuarioViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewset
     serializer_class = UsuarioSerializer
     queryset = Usuario.objects.all()
 
+
+    @extend_schema(description='Retorna todos os usuarios do banco de dados')
     def get(self, request):
         usuarios = Usuario.objects.all()
         serializer = UsuarioSerializer(usuarios, many=True)
         return JsonResponse({"Usuarios": serializer.data})
     
-
+    @extend_schema(description='Cria um usuario o qual devera ser cliente ou fornecedor')
     def post(self, request):
         serializer = UsuarioSerializer(data=request.data)
         if serializer.is_valid():
@@ -133,12 +141,13 @@ class FornecedorViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, view
     serializer_class = FornecedorSerializer
     queryset = Fornecedor.objects.all()
 
+    @extend_schema(description='Retorna todos os fornecedores do banco de dados')
     def get(self, request):
         fornecedores = Fornecedor.objects.all()
         serializer = FornecedorSerializer(fornecedores, many=True)
         return JsonResponse({"fornecedores": serializer.data})
     
-
+    @extend_schema(description='Para criar um fornecedor é necessario estar logado com um usuario do tipo is_fornecedor para ele ser associado ao novo forncedor. Não é necessario incluir o campo fornecedor_user')
     def post(self, request):
         # serializer = FornecedorSerializer(data=request.data)
         # if serializer.is_valid():
@@ -173,7 +182,7 @@ class FornecedorViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, view
 
 
 
-        
+    
     def get_specific(self, request, id):
         try:
             fornecedor = Fornecedor.objects.get(pk=id)
@@ -210,12 +219,14 @@ class ClienteViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewset
     serializer_class = ClienteSerializer
     queryset = Cliente.objects.all()
         
+
+    @extend_schema(description='Retorna todos os clientes do banco de dados')
     def get(self,request):
         usuarios = Cliente.objects.all()
         serializer = ClienteSerializer(usuarios, many=True)
         return JsonResponse({"usuarios": serializer.data})
     
-    
+    @extend_schema(description='Para criar um cliente é necessario estar logado com um usuario do tipo is_cliente para ele ser associado ao novo cliente. Não é necessario incluir o campo cliente_user, ele irá ser preenchido com o usuario do tipo cliente autenticado')
     def post(self,request):
 
         # fields_usuario = ['username','email','telefone','password']
@@ -284,12 +295,16 @@ class AvaliacaoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, views
     serializer_class = AvaliacaoSerializer
     queryset = Avaliacao.objects.all()
         
+
+    @extend_schema(description='retorna todas as avaliações do banco de dados. Filtragem baseada em produto ainda não feita')
     def get(self,request):
         print(request.user.id)
         avaliacoes = Avaliacao.objects.all()
         serializer = AvaliacaoSerializer(avaliacoes, many=True)
         return JsonResponse({"avaliacoes": serializer.data})
     
+
+    @extend_schema(description='Cria nova avaliação. Para usar deve estar autenticado com um cliente para preencher o campo cliente. Não é necessario preencher o campo cliente')
     def post(self,request):
         data = request.data
         data["cliente"] = Cliente.objects.get(cliente_user=request.user).id
@@ -339,6 +354,8 @@ class RelatorioViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, views
     serializer_class = RelatorioSerializer
     queryset = Relatorio.objects.all()
         
+
+    @extend_schema(description='Retorna todos os relatorios do banco de dados')
     def get(self,request):
         print(request.user.id)
         relatorios = Relatorio.objects.all()
