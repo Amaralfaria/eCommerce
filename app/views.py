@@ -11,6 +11,7 @@ from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnl
 
 
 
+
 class ProdutoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet):
     permission_classes = [IsAuthenticatedOrReadOnly, ] 
     serializer_class = ProdutoSerializer
@@ -162,6 +163,7 @@ class FornecedorViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, view
         #     return Response(dict(request.data), status=status.HTTP_201_CREATED)
         data = request.data
         data["fornecedor_user"] = request.user.id
+        
         serializer = FornecedorSerializer(data=data)
         if serializer.is_valid():
             serializer.save()

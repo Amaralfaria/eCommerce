@@ -5,7 +5,7 @@ class FornecedorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Fornecedor
         fields = ['id','nome_do_negocio', 'endereco', 'latitude', 'longitude','fornecedor_user']
-        read_only_fields = ['id','fornecedor_user']
+        read_only_fields = ['id']
 
 class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
@@ -23,7 +23,7 @@ class ClienteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cliente
         fields = ['id','preferencias_de_busca','cliente_user']
-        read_only_fields = ['id','cliente_user']
+        read_only_fields = ['id']
 
         
 
@@ -31,13 +31,13 @@ class ProdutoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Produto
         fields = ['id','nome', 'descricao', 'preco', 'categoria', 'fornecedor']
-        read_only_fields = ['id','fornecedor']
+        read_only_fields = ['id']
 
 class AvaliacaoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Avaliacao
         fields = ['id','cliente', 'produto', 'nota', 'comentario']
-        read_only_fields = ['id','cliente']
+        read_only_fields = ['id']
 
 
 class RelatorioSerializer(serializers.ModelSerializer):
