@@ -2,14 +2,14 @@ from django.http import JsonResponse
 from .models import Produto
 from .serializers import *
 from rest_framework.response import Response
-from django.db.models import Q, F
+from django.db.models import Q, F, ExpressionWrapper, fields
 from rest_framework import status
 from rest_framework import  mixins
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly, AllowAny
 from datetime import date
 from drf_spectacular.utils import extend_schema
-from .utils import haversine
+from django.db.models.functions import ACos, Cos, Radians, Sin
 
 
 
@@ -21,7 +21,7 @@ class ProdutoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewset
     queryset = Produto.objects.all()
 
 
-    @extend_schema(description='Faz uma query de todos os produtos e faz uma filtragem baseada nos parametros baseados pela URL. Parametros: nomeProduto,precoMaximo,precoMinimo,raio, latitude e longitude do cliente')
+    @extend_schema(description='Faz uma query de todos os produtos e faz uma filtragem baseada nos parametros baseados pela URL. Parametros: nomeProduto,precoMaximo,precoMinimo, raio, latitude e longitude do cliente. Para retornar a distancia devem ser fornecido sraio, latitude e longitude do cliente. Ex: http://127.0.0.1:8000/produtos/?raio=14&latitudeCliente=50.1&longitudeCliente=50.1')
     def get(self, request):
         produtos = Produto.objects.all()
 
@@ -38,24 +38,43 @@ class ProdutoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewset
             raio = float(raio)
             latitudeCliente = float(latitudeCliente)
             longitudeCliente = float(longitudeCliente)
-            produtos = produtos.filter(haversine(lat1=latitudeCliente,lon1=longitudeCliente,lat2=F('fornecedor__latitude'),lon2=F('fornecedor__longitude')) <= raio)
+
+            produtos = Produto.objects.annotate(
+                distancia=ExpressionWrapper(
+                    ACos(
+                        Cos(Radians(latitudeCliente)) * Cos(Radians(F('fornecedor__latitude'))) * Cos(Radians(F('fornecedor__longitude')) - Radians(longitudeCliente)) +
+                        Sin(Radians(latitudeCliente)) * Sin(Radians(F('fornecedor__latitude')))
+                    ) * 6371,  # Raio da Terra em quilômetros
+                    output_field=fields.FloatField()
+                )
+            ).filter(distancia__lte=raio)
 
         if feira:
             produtos = produtos.filter(Q(fornecedor__feira=int(feira)))
         if fornecedorProduto:
             produtos = produtos.filter(Q(fornecedor__nome_do_negocio__icontains=fornecedorProduto))
+
         if nomeProduto:
             produtos = produtos.filter(Q(nome__icontains=nomeProduto))
         if precoMaximo:
-            precoMaximo = float(precoMaximo)
+            print(precoMaximo)
             produtos = produtos.filter(Q(preco__lte=precoMaximo))
         if precoMinimo:
-            precoMinimo = float(precoMinimo)
             produtos = produtos.filter(Q(preco__gte=precoMinimo))
 
 
-        serializer = ProdutoSerializer(produtos, many=True)
-        return JsonResponse({"produtos":serializer.data})
+        serialized = list(produtos.values())
+
+        for produto in serialized:
+            produto["fornecedor"] = produto.pop("fornecedor_id")
+
+
+
+        # serializer = ProdutoSerializer(produtos, many=True)
+        
+
+        # return JsonResponse({"produtos":serializer.data})
+        return JsonResponse({"produtos":serialized})
     
 
     @extend_schema(description='Cria um produto, é necessario estar logado com o usuario do fornecedor que está adicionando o produto. Não é necesario incluir o campo do fornecedor, ele será obtido pela autenticação')
