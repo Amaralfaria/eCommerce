@@ -33,6 +33,14 @@ urlpatterns = [
     path("produtos/",views.ProdutoViewSet.as_view({"get":"get","post":"post"}), name="produtos"),
     path("produtos/<int:id>", views.ProdutoViewSet.as_view({"get":"get_specific","put":"put","delete":"delete"})),
 
+    #categorias
+    path('categorias/', views.CategoriaViewSet.as_view({"get":"get"})),
+
+    #Compras
+    path("cliente/compras", views.CompraViewSet.as_view({"get":"get_cliente_compras","post":"post"})),
+    path("cliente/compras/<int:id>", views.CompraViewSet.as_view({"get":"get_specific","delete":"delete"})),
+
+
     #usuarios
     path("usuarios/", views.UsuarioViewSet.as_view({"get":"get","post":"post"}), name="usuarios"),
     path('usuarios/<int:id>', views.UsuarioViewSet.as_view({"get":"get_specific","put":"put","delete":"delete"})),
@@ -41,13 +49,22 @@ urlpatterns = [
     path('fornecedores/', views.FornecedorViewSet.as_view({"get":"get","post":"post"})),
     path('fornecedores/<int:id>', views.FornecedorViewSet.as_view({"get":"get_specific","put":"put","delete":"delete"})),
 
+    #feiras
+    path('feira/', views.FeiraViewSet.as_view({"get":"get"})),
+
+    #Mensagens
+    path('mensagens/<int:user1>/<int:user2>', views.MensagemViewSet.as_view({"get":"get_msg_cliente_fornecedor"})),
+    path('mensagens/', views.MensagemViewSet.as_view({"post":"post"})),
+
     #avaliacoes
     path('avaliacoes/', views.AvaliacaoViewSet.as_view({"get":"get","post":"post"})),
     path('avaliacoes/<int:id>', views.AvaliacaoViewSet.as_view({"get":"get_specific","put":"put","delete":"delete"})),
 
     #relatorios
+    # path('relatorios/', views.RelatorioViewSet.as_view({"get":"get","post":"post"})),
+    # path('relatorios/<int:id>', views.RelatorioViewSet.as_view({"get":"get_specific","put":"put","delete":"delete"})),
     path('relatorios/', views.RelatorioViewSet.as_view({"get":"get","post":"post"})),
-    path('relatorios/<int:id>', views.RelatorioViewSet.as_view({"get":"get_specific","put":"put","delete":"delete"})),
+
 
     #Clientes
     path('cliente/', views.ClienteViewSet.as_view({"get":"get","post":"post"})),

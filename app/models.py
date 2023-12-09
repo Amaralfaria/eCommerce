@@ -62,11 +62,18 @@ class Cliente(models.Model):
         return self.credentials
 
 
+class Feira(models.Model):
+    nome = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.nome
+
 class Fornecedor(models.Model):
+    feira = models.ForeignKey(Feira,on_delete=models.DO_NOTHING, null=True)
     fornecedor_user = models.OneToOneField(Usuario, related_name='forncedor_user', on_delete=models.CASCADE)
     nome_do_negocio = models.CharField(max_length=255)
     endereco = models.CharField(max_length=255)
-    email = models.EmailField(max_length=255, unique=True)
+    # email = models.EmailField(max_length=255, unique=True)
     latitude = models.DecimalField(max_digits=9, decimal_places=6)
     longitude = models.DecimalField(max_digits=9, decimal_places=6)
 
@@ -101,13 +108,21 @@ class Fornecedor(models.Model):
 
     def __str__(self):
         return self.nome_do_negocio
+    
 
+
+
+class Categoria(models.Model):
+    nome = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.nome
 
 class Produto(models.Model):
     nome = models.CharField(max_length=255)
     descricao = models.TextField()
     preco = models.DecimalField(max_digits=10, decimal_places=2)
-    categoria = models.CharField(max_length=255)
+    categoria = models.ForeignKey(Categoria, on_delete=models.DO_NOTHING)
     fornecedor = models.ForeignKey(Fornecedor, on_delete=models.CASCADE, related_name='produtos')
 
     def clean(self):
@@ -123,12 +138,33 @@ class Produto(models.Model):
         if self.preco <= 0:
             raise ValidationError({'preco': 'O preço deve ser positivo.'})
 
-        # Validação da categoria
-        if not self.categoria.strip():
-            raise ValidationError({'categoria': 'A categoria não pode ser vazia.'})
+        # # Validação da categoria
+        # if not self.categoria.strip():
+        #     raise ValidationError({'categoria': 'A categoria não pode ser vazia.'})
 
     def __str__(self):
         return self.nome
+    
+    
+class Compra(models.Model):
+    cliente = models.ForeignKey(Cliente, related_name='compras', on_delete=models.CASCADE)
+    produtos = models.ManyToManyField(Produto,related_name='compra_produto')
+    data_compra = models.DateField()
+
+
+    def __str__(self):
+        return self.produtos
+    
+
+class Mensagem(models.Model):
+    remetente = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='mensagens_enviadas')
+    destinatario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='mensagens_recebidas')
+    conteudo = models.TextField()
+    data_envio = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.remetente.username} para {self.destinatario.username} em {self.data_envio}"
+
 
 
 class Avaliacao(models.Model):
@@ -148,6 +184,12 @@ class Avaliacao(models.Model):
 
     def __str__(self):
         return f"Avaliação de {self.usuario.username} para {self.produto.nome}"
+
+
+class RelatorioPesquisas(models.Model):
+    pesquisa = models.TextField()
+    data_pesquisa = models.DateField(auto_now_add=True)
+
 
 
 class Relatorio(models.Model):

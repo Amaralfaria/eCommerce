@@ -2,12 +2,14 @@ from django.http import JsonResponse
 from .models import Produto
 from .serializers import *
 from rest_framework.response import Response
-from django.db.models import Q
+from django.db.models import Q, F
 from rest_framework import status
 from rest_framework import  mixins
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly, AllowAny
+from datetime import date
 from drf_spectacular.utils import extend_schema
+from .utils import haversine
 
 
 
@@ -19,22 +21,36 @@ class ProdutoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewset
     queryset = Produto.objects.all()
 
 
-    @extend_schema(description='Faz uma query de todos os produtos e faz uma filtragem baseada nos parametros baseados pela URL. Parametros: nomeProduto,precoMaximo,precoMinimo. Depois adicionar: raio, latitude e longitude do cliente')
+    @extend_schema(description='Faz uma query de todos os produtos e faz uma filtragem baseada nos parametros baseados pela URL. Parametros: nomeProduto,precoMaximo,precoMinimo,raio, latitude e longitude do cliente')
     def get(self, request):
         produtos = Produto.objects.all()
 
         nomeProduto = request.query_params.get('nomeProduto',None)
         precoMaximo = request.query_params.get('precoMaximo',None)
         precoMinimo = request.query_params.get('precoMinimo',None)
-        # fornecedorProduto = request.query_params.get('fornecedor',None)
+        fornecedorProduto = request.query_params.get('banca',None)
+        feira = request.query_params.get('feira',None)
         raio = request.query_params.get('raio',None)
+        latitudeCliente = request.query_params.get('latitudeCliente',None)
+        longitudeCliente = request.query_params.get('longitudeCliente',None)
 
+        if raio and latitudeCliente and longitudeCliente:
+            raio = float(raio)
+            latitudeCliente = float(latitudeCliente)
+            longitudeCliente = float(longitudeCliente)
+            produtos = produtos.filter(haversine(lat1=latitudeCliente,lon1=longitudeCliente,lat2=F('fornecedor__latitude'),lon2=F('fornecedor__longitude')) <= raio)
+
+        if feira:
+            produtos = produtos.filter(Q(fornecedor__feira=int(feira)))
+        if fornecedorProduto:
+            produtos = produtos.filter(Q(fornecedor__nome_do_negocio__icontains=fornecedorProduto))
         if nomeProduto:
             produtos = produtos.filter(Q(nome__icontains=nomeProduto))
         if precoMaximo:
-            print(precoMaximo)
+            precoMaximo = float(precoMaximo)
             produtos = produtos.filter(Q(preco__lte=precoMaximo))
         if precoMinimo:
+            precoMinimo = float(precoMinimo)
             produtos = produtos.filter(Q(preco__gte=precoMinimo))
 
 
@@ -45,7 +61,6 @@ class ProdutoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewset
     @extend_schema(description='Cria um produto, é necessario estar logado com o usuario do fornecedor que está adicionando o produto. Não é necesario incluir o campo do fornecedor, ele será obtido pela autenticação')
     def post(self, request):
         data = request.data
-        print(request.user)
         data["fornecedor"] = Fornecedor.objects.get(fornecedor_user=request.user).id
         serializer = ProdutoSerializer(data=data)
         if serializer.is_valid():
@@ -84,6 +99,82 @@ class ProdutoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewset
         produto.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
     
+class CategoriaViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet):
+    permission_classes = [IsAuthenticatedOrReadOnly, ]
+    serializer_class = CategoriaSerializer
+    queryset = Categoria.objects.all()
+
+    @extend_schema(description='Retorna todas as categorias registradas. Feita para utilizar no cadastro dos produtos')
+    def get(self,request):
+        categorias = Categoria.objects.all()
+        serializer = CategoriaSerializer(categorias, many=True)
+        return JsonResponse({"categorias":serializer.data})
+
+
+
+class CompraViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet):
+    permission_classes = [IsAuthenticatedOrReadOnly, ]
+    serializer_class = CompraSerializer
+    queryset = Compra.objects.all()
+
+    @extend_schema(description='Retorna as compras do cliente logado. Não preencher o campo cliente, ele será puxado do usuario autenticado')
+    def get_cliente_compras(self, request):
+        try:
+            cliente = Cliente.objects.get(cliente_user=request.user)
+        except Cliente.DoesNotExist:
+            return Response("Usuario logado não é cliente", status=status.HTTP_403_FORBIDDEN)
+        
+        compras = Compra.objects.filter(cliente=cliente)
+        serializer = CompraSerializer(compras, many=True)
+
+        return JsonResponse({"Compras":serializer.data}, status=status.HTTP_200_OK)
+
+    @extend_schema(description='Realiza uma nova compra no perfil do cliente logado. Não precisa preencher o campo cliente, ele será puxado do usuario autenticado')
+    def post(self, request):
+        try:
+            cliente = Cliente.objects.get(cliente_user=request.user)
+        except Cliente.DoesNotExist:
+            return Response("Usuario logado não é cliente", status=status.HTTP_403_FORBIDDEN)
+        
+        data = request.data
+        data["cliente"] = cliente.id
+        data["data_compra"] = date.today()
+        serializer = CompraSerializer(data=data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data,status=status.HTTP_201_CREATED)
+        
+    def get_specific(self,request,id):
+        try:
+            compra = Compra.objects.get(pk=id)
+        except Compra.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = CompraSerializer(compra)
+        return Response(serializer.data)
+
+    def delete(self,request,id):
+        try:
+            compra = Compra.objects.get(pk=id)
+        except Compra.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+        compra.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
+
+
+
+
+        
+
+
+
+
+
+    
+
 
 class UsuarioViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet):
     permission_classes = [AllowAny,]
@@ -214,6 +305,19 @@ class FornecedorViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, view
         return Response(status=status.HTTP_204_NO_CONTENT)
     
 
+class FeiraViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet):
+    permission_classes = [AllowAny, ] 
+    serializer_class = FeiraSerializer
+    queryset = Feira.objects.all()
+
+
+    @extend_schema(description='Retorna todas as feiras cadastradas no sistema juntamente com seu ID. Feita para usar no cadastro de um Forncedor')
+    def get(self, request):
+        feiras = Feira.objects.all()
+        serializer = FeiraSerializer(feiras, many=True)
+        return JsonResponse({"feiras":serializer.data})
+    
+
 class ClienteViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet):
     permission_classes = [IsAuthenticatedOrReadOnly, ] 
     serializer_class = ClienteSerializer
@@ -283,7 +387,43 @@ class ClienteViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewset
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         cliente.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)     
+        return Response(status=status.HTTP_204_NO_CONTENT)    
+
+
+class MensagemViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet):
+    permission_classes = [IsAuthenticatedOrReadOnly, ]
+    serializer_class = MensagemSerializer
+    queryset = Mensagem.objects.all()
+
+
+    @extend_schema(description='Retorna todas as mensagens entre user1 e user2. Retorna de maneira ordenada')
+    def get_msg_cliente_fornecedor(self,request,user1,user2):
+        mensagens = Mensagem.objects.filter((Q(destinatario=user1) & Q(remetente=user2)) | (Q(destinatario=user2) & Q(remetente=user1))).order_by('data_envio')
+
+        for msg in mensagens:
+            print(msg.__dict__)
+
+        serializer = MensagemSerializer(mensagens, many=True)
+
+        
+
+        return JsonResponse({"mensagens": serializer.data})
+    
+    @extend_schema(description='Cria uma nova mensagem. O remetente será o usuario autenticado e o destinatario será o id de um Usuario')
+    def post(self,request):
+        # data = request.data
+        # data["remetente"] = request.user.id
+        serializer = MensagemSerializer(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            print(serializer.errors)
+
+    
+
+        
+
     
 
 
