@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+
+        .form-container {
+            max-width: 600px;
+            margin: auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 5px;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .form-group button {
+            background-color: #3498db;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .form-group button:hover {
+            background-color: #2185d0;
+        }
+    </style>
+    <title>Cadastrar Produto</title>
+    {% load static %}
+    <script src="{% static 'js/cadastro_produto.js' %}"></script>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Cadastrar Produto</h1>
+        <form id="formProduto">
+            <div class="form-group">
+                <label for="nome">Nome:</label>
+                <input type="text" id="nome" placeholder="Digite o nome do produto" required>
+            </div>
+            <div class="form-group">
+                <label for="descricao">Descrição:</label>
+                <textarea id="descricao" placeholder="Digite a descrição do produto" rows="4" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="preco">Preço:</label>
+                <input type="number" id="preco" placeholder="Digite o preço do produto" step="any" required>
+            </div>
+            <div class="form-group">
+                <label for="categoria">Categoria:</label>
+                <select id="categoria" required>
+                    <!-- Options serão preenchidos dinamicamente via JavaScript -->
+                </select>
+            </div>
+            <div class="form-group">
+                <button type="button" onclick="cadastrarProduto()">Cadastrar Produto</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Adicione a referência ao seu script JavaScript para preencher os campos "Categoria" e "Fornecedor" dinamicamente -->
+
+</body>
+</html>
