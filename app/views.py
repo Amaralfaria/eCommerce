@@ -38,7 +38,7 @@ class ProdutoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewset
     ***************************************************************************/ 
 '''
 
-    @extend_schema(description='Faz uma query de todos os produtos e faz uma filtragem baseada nos parametros baseados pela URL. Parametros: nomeProduto,precoMaximo,precoMinimo, raio, banca, feira,latitude e longitude do clientee. Para retornar a distancia devem ser fornecidos raio, latitude e longitude do cliente. Ex: http://127.0.0.1:8000/produtos/?feira=1&nomeProduto=colar&precoMaximo=1000&precoMinimo=10&banca=biju&raio=30&latitudeCliente=50&longitudeCliente=50')
+    @extend_schema(description='Faz uma query de todos os produtos e faz uma filtragem baseada nos parametros baseados pela URL. Parametros: nomeProduto,precoMaximo,precoMinimo, raio, banca, feira,latitude e longitude do cliente. Para retornar a distancia devem ser fornecido raio, latitude e longitude do cliente. Exemplo: http://127.0.0.1:8000/produtos/?raio=14&latitudeCliente=50.1&longitudeCliente=50.1')
     def get(self, request):
         produtos = Produto.objects.all()
 
@@ -113,7 +113,7 @@ class ProdutoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewset
     ***************************************************************************/ 
     '''
          
-    @extend_schema(description='Cria um produto, é necessario estar logado com o usuario do fornecedor que está adicionando o produto. Não é necesario incluir o campo do fornecedor, ele será obtido pela autenticação')
+    @extend_schema(description='É criado um novo produto no banco de dados a partir das informações        passadas, sendo elas, nome, descricao, preco e id da categoria. O usuario autenticado é um fornecedor e será associado ao produto.')
     def post(self, request):
         data = request.data
         data["fornecedor"] = Fornecedor.objects.get(fornecedor_user=request.user).id
@@ -140,6 +140,7 @@ class ProdutoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewset
         type(id) == int
     ***************************************************************************/ 
     '''
+    @extend_schema(description='Retorna um unico produto a partir de id passada na URL')
     def get_specific(self, request, id):
         try:
             produto = Produto.objects.get(pk=id)
@@ -169,6 +170,7 @@ class ProdutoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewset
         request.user.is_authenticated
     ***************************************************************************/ 
     '''
+    @extend_schema(description='Atualiza produto com base no ID passado na URL')
     def put(self, request, id):
         try:
             produto = Produto.objects.get(pk=id)
@@ -201,6 +203,7 @@ class ProdutoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewset
         request.user.is_authenticated
     ***************************************************************************/ 
     '''
+    @extend_schema(description='Deleta produto com base no ID passado na URL')
     def delete(self, request, id):
         try:
             produto = Produto.objects.get(pk=id)
@@ -330,6 +333,7 @@ class CompraViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewsets
         type(id) == int
     ***************************************************************************/
     '''
+    @extend_schema(description='Retorna uma única compra a partir do ID passado na URL.')
     def get_specific(self,request,id):
         try:
             compra = Compra.objects.get(pk=id)
@@ -357,6 +361,7 @@ class CompraViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewsets
         request.user.is_authenticated
     ***************************************************************************/
     '''
+    @extend_schema(description='Deleta uma compra com base no ID passado na URL. Usuario deve estar autenticado')
     def delete(self,request,id):
         try:
             compra = Compra.objects.get(pk=id)
@@ -438,6 +443,7 @@ class UsuarioViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewset
         type(id) == int
     ***************************************************************************/ 
     '''
+    @extend_schema(description='Retorna um unico usuario a partir de id passada na URL')
     def get_specific(self, request, id):
         try:
             usuario = Usuario.objects.get(pk=id)
@@ -466,6 +472,7 @@ class UsuarioViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewset
         type(id) == int
     ***************************************************************************/ 
 '''
+    @extend_schema(description='Atualiza usuario com base no ID passado na URL')
     def put(self, request, id):
         try:
             usuario = Usuario.objects.get(pk=id)
@@ -496,6 +503,7 @@ class UsuarioViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewset
         type(id) == int
     ***************************************************************************/ 
     '''
+    @extend_schema(description='Deleta usuario com base no ID passado na URL')
     def delete(self, request, id):
         try:
             usuario = Usuario.objects.get(pk=id)
@@ -553,7 +561,7 @@ class FornecedorViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, view
         request.user.is_authenticated
         request.user.is_fornecedor
     '''
-    @extend_schema(description='Para criar um fornecedor é necessario estar logado com um usuario do tipo is_fornecedor para ele ser associado ao novo forncedor. Não é necessario incluir o campo fornecedor_user')
+    @extend_schema(description='É criado um novo objeto no banco de dados a partir das informações        passadas, sendo elas, nome_do_negocio, endereco, latitude, longitude, feira. Deve ter um usuario is_fornecedor logado para que ele seja associado ao novo fornecedor')
     def post(self, request):
         data = request.data
         data["fornecedor_user"] = request.user.id
@@ -587,6 +595,7 @@ class FornecedorViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, view
         type(id) == int
     ***************************************************************************/ 
     '''
+    @extend_schema(description='Retorna um unico fornecedor a partir de id passada na URL')
     def get_specific(self, request, id):
         try:
             fornecedor = Fornecedor.objects.get(pk=id)
@@ -616,6 +625,7 @@ class FornecedorViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, view
         request.user.is_authenticated
     ***************************************************************************/ 
     '''
+    @extend_schema(description='Atualiza fornecedor com base no ID passado na URL')
     def put(self, request, id):
         try:
             fornecedor = Fornecedor.objects.get(pk=id)
@@ -647,6 +657,7 @@ class FornecedorViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, view
         request.user.is_authenticated
     ***************************************************************************/ 
     '''
+    @extend_schema(description='Deleta fornecedor com base no ID passado na URL')
     def delete(self, request, id):
         try:
             fornecedor = Fornecedor.objects.get(pk=id)
@@ -731,7 +742,7 @@ class ClienteViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewset
         request.user.is_authenticated and request.user.is_cliente
     ***************************************************************************/
     '''
-    @extend_schema(description='Para criar um cliente é necessario estar logado com um usuario do tipo is_cliente para ele ser associado ao novo cliente. Não é necessario incluir o campo cliente_user, ele irá ser preenchido com o usuario do tipo cliente autenticado')
+    @extend_schema(description='Cria um novo cliente no banco de dados com as informações passadas, incluindo nome, email e telefone. O usuário logado deve ser do tipo cliente para ser associado ao novo cliente')
     def post(self,request):
         data = request.data
         data["cliente_user"] = request.user.id
@@ -760,6 +771,7 @@ class ClienteViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewset
         type(id) == int
     ***************************************************************************/
     '''
+    @extend_schema(description='Retorna um único cliente com base no ID passado na URL.')
     def get_specific(self,request, id):
         try:
             cliente = Cliente.objects.get(pk=id)
@@ -790,7 +802,7 @@ class ClienteViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewset
     ***************************************************************************/
     '''
 
-
+    @extend_schema(description='Atualiza o cliente com base no ID passado na URL. O usuario deve estar logado')
     def put(self,request, id):
         try:
             cliente = Cliente.objects.get(pk=id)
@@ -824,6 +836,7 @@ class ClienteViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewset
         request.user.is_authenticated
     ***************************************************************************/
     '''
+    @extend_schema(description='Deleta o cliente com base no ID passado na URL. O usuario deve estar logado')
     def delete(self,request, id):
         try:
             cliente = Cliente.objects.get(pk=id)
@@ -857,7 +870,7 @@ class MensagemViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewse
         request.method == 'GET'
     ***************************************************************************/
     '''
-    @extend_schema(description='Retorna todas as mensagens entre user1 e user2. Retorna de maneira ordenada')
+    @extend_schema(description='Será feita uma query que retornará todas as mensagens entre dois usuarios. Retorna de maneira ordenada')
     def get_msg_cliente_fornecedor(self,request,user1,user2):
         mensagens = Mensagem.objects.filter((Q(destinatario=user1) & Q(remetente=user2)) | (Q(destinatario=user2) & Q(remetente=user1))).order_by('data_envio')
 
@@ -888,7 +901,7 @@ class MensagemViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewse
         request.user.is_authenticated
     ***************************************************************************/
     '''
-    @extend_schema(description='Cria uma nova mensagem. O remetente será o usuario autenticado e o destinatario será o id de um Usuario')
+    @extend_schema(description='É criada uma nova mensagem no banco de dados a partir das informações passadas, incluindo destinatario, conteudo e data_envio. O usuario devera estar autenticado para que ele seja o remetente da mensagem no banco de dados')
     def post(self,request):
         # data = request.data
         # data["remetente"] = request.user.id
@@ -923,7 +936,7 @@ class AvaliacaoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, views
     ***************************************************************************/
     '''
 
-    @extend_schema(description='retorna todas as avaliações do banco de dados. Filtragem baseada em produto ainda não feita')
+    @extend_schema(description='retorna todas as avaliações do banco de dados')
     def get(self,request):
         # print(request.user.id)
         avaliacoes = Avaliacao.objects.all()
@@ -951,7 +964,7 @@ class AvaliacaoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, views
     ***************************************************************************/
     '''
 
-    @extend_schema(description='Cria nova avaliação. Para usar deve estar autenticado com um cliente para preencher o campo cliente. Não é necessario preencher o campo cliente')
+    @extend_schema(description='É criada uma nova avaliação no banco de dados a partir das informações passadas, incluindo produto ,nota e comentario. É necessario estar autenticado para que a nova avaliação seja associada ao usuario')
     def post(self,request):
         data = request.data
         data["cliente"] = Cliente.objects.get(cliente_user=request.user).id
@@ -979,7 +992,7 @@ class AvaliacaoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, views
         type(id) == int
     ***************************************************************************/
     '''
-        
+    @extend_schema(description='Retorna uma única avaliação a partir do ID passado na URL.')
     def get_specific(self,request, id):
         try:
             avaliacao = Avaliacao.objects.get(pk=id)
@@ -1008,7 +1021,7 @@ class AvaliacaoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, views
         request.user.is_authenticated
     ***************************************************************************/
     '''
-    
+    @extend_schema(description='Atualiza uma avaliação com base no ID passado na URL. O usuario deve estar logado')
     def put(self,request, id):
         try:
             avaliacao = Avaliacao.objects.get(pk=id)
@@ -1041,6 +1054,7 @@ class AvaliacaoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, views
         request.user.is_authenticated
     ***************************************************************************/
     '''
+    @extend_schema(description='Deleta uma avaliação com base no ID passado na URL. O usuario deve estar logado')
     def delete(self,request, id):
         try:
             avaliacao = Avaliacao.objects.get(pk=id)
