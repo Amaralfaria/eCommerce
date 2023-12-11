@@ -21,7 +21,24 @@ class ProdutoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewset
     queryset = Produto.objects.all()
 
 
-    @extend_schema(description='Faz uma query de todos os produtos e faz uma filtragem baseada nos parametros baseados pela URL. Parametros: nomeProduto,precoMaximo,precoMinimo, raio, latitude e longitude do cliente. Para retornar a distancia devem ser fornecido sraio, latitude e longitude do cliente. Ex: http://127.0.0.1:8000/produtos/?raio=14&latitudeCliente=50.1&longitudeCliente=50.1')
+    '''
+    /***************************************************************************
+    *Função: API que retorna lista de produtos
+    *Descrição: 
+        Faz uma query de todos os produtos e faz uma filtragem baseada nos parametros baseados pela URL. Parametros: nomeProduto,precoMaximo,precoMinimo, raio, banca, feira,latitude e longitude do cliente. Para retornar a distancia devem ser fornecido raio, latitude e longitude do cliente. Exemplo: http://127.0.0.1:8000/produtos/?raio=14&latitudeCliente=50.1&longitudeCliente=50.1
+
+    * Parametros
+        request - objeto de HttpRequest
+
+    * Valor retornado
+        Retorna um JsonResponse com todos os produtos que atendiam as condicoes passadas pela URL. Caso seja um metodo POST e o objeto tenha sido criado, retorna uma Response com status 201_CREATED junto com os dados do novo produto
+
+    * Assertica de entrada
+        request.method == 'GET'
+    ***************************************************************************/ 
+'''
+
+    @extend_schema(description='Faz uma query de todos os produtos e faz uma filtragem baseada nos parametros baseados pela URL. Parametros: nomeProduto,precoMaximo,precoMinimo, raio, banca, feira,latitude e longitude do clientee. Para retornar a distancia devem ser fornecidos raio, latitude e longitude do cliente. Ex: http://127.0.0.1:8000/produtos/?feira=1&nomeProduto=colar&precoMaximo=1000&precoMinimo=10&banca=biju&raio=30&latitudeCliente=50&longitudeCliente=50')
     def get(self, request):
         produtos = Produto.objects.all()
 
@@ -76,7 +93,26 @@ class ProdutoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewset
         # return JsonResponse({"produtos":serializer.data})
         return JsonResponse({"produtos":serialized})
     
+    '''
+    /***************************************************************************
+    *Função: API que criar um novo produto
+    *Descrição: 
+        Recebe uma requisição HTTP. É criado um novo objeto no banco de dados a partir das informações        passadas, sendo elas, nome, descricao, preco e id da categoria. O usuario autenticado é um fornecedor e será associado ao produto.
 
+    * Parametros
+        request - objeto de HttpRequest
+
+    * Valor retornado
+        Caso o objeto tenha sido criado, retorna uma Response com status 201_CREATED junto com os dados do novo produto
+
+    * Assertica de entrada
+        request.method == 'POST'
+        all(campo in request.data for campo in["nome","descricao","preco","categoria","fornecedor"])
+        request.user.is_authenticated
+        request.user.is_fornecedor
+    ***************************************************************************/ 
+    '''
+         
     @extend_schema(description='Cria um produto, é necessario estar logado com o usuario do fornecedor que está adicionando o produto. Não é necesario incluir o campo do fornecedor, ele será obtido pela autenticação')
     def post(self, request):
         data = request.data
@@ -86,7 +122,24 @@ class ProdutoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewset
             serializer.save()
             return Response(serializer.data,status=status.HTTP_201_CREATED)
         
-    
+    '''
+    /***************************************************************************
+    *Função: API que retorna um produto pelo ID
+    *Descrição: 
+        Retorna um unico produto a partir de id passada na URL
+
+    * Parametros
+        request - objeto de HttpRequest
+        id - id do produto desejado
+
+    * Valor retornado
+        Retorna uma Response com o produto em questão caso seja encontrado com status 200. Caso não encontre retona uma response com status 404
+
+    * Assertica de entrada
+        request.method == 'GET'
+        type(id) == int
+    ***************************************************************************/ 
+    '''
     def get_specific(self, request, id):
         try:
             produto = Produto.objects.get(pk=id)
@@ -96,6 +149,26 @@ class ProdutoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewset
         serializer = ProdutoSerializer(produto)
         return Response(serializer.data)
     
+
+    '''
+    /***************************************************************************
+    *Função: API atualiza um produto pelo ID
+    *Descrição: 
+        Atualiza produto com base no ID passado na URL
+
+    * Parametros
+        request - objeto de HttpRequest
+        id - id do produto desejado
+
+    * Valor retornado
+        Retorna uma Response com o produto atualizado em questão caso seja encontrado com status 200. Caso não encontre retona uma response com status 404
+
+    * Assertica de entrada
+        request.method == 'PUT'
+        type(id) == int
+        request.user.is_authenticated
+    ***************************************************************************/ 
+    '''
     def put(self, request, id):
         try:
             produto = Produto.objects.get(pk=id)
@@ -109,6 +182,25 @@ class ProdutoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewset
         
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
     
+    '''
+    /***************************************************************************
+    *Função: API que deleta produto pelo ID
+    *Descrição: 
+        Deleta produto com base no ID passado na URL
+
+    * Parametros
+        request - objeto de HttpRequest
+        id - id do produto desejado
+
+    * Valor retornado
+        Retorna uma Response status 204 caso o produto tenha sido encontrado e deletado. Caso não encontre retona uma response com status 404
+
+    * Assertica de entrada
+        request.method == 'DELETE'
+        type(id) == int
+        request.user.is_authenticated
+    ***************************************************************************/ 
+    '''
     def delete(self, request, id):
         try:
             produto = Produto.objects.get(pk=id)
@@ -117,12 +209,30 @@ class ProdutoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewset
         
         produto.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-    
+
+
+ 
 class CategoriaViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet):
     permission_classes = [IsAuthenticatedOrReadOnly, ]
     serializer_class = CategoriaSerializer
     queryset = Categoria.objects.all()
 
+    '''
+    /***************************************************************************
+    *Função: API que retorna lista de categorias
+    *Descrição: 
+        Será feita uma query que retornará todas as categorias disponíveis.
+
+    * Parâmetros
+        request - objeto de HttpRequest
+
+    * Valor retornado
+        Retorna um JsonResponse com todas as categorias com status 200.
+
+    * Assertiva de entrada
+        request.method == 'GET'
+    ***************************************************************************/
+    '''
     @extend_schema(description='Retorna todas as categorias registradas. Feita para utilizar no cadastro dos produtos')
     def get(self,request):
         categorias = Categoria.objects.all()
@@ -132,10 +242,29 @@ class CategoriaViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, views
 
 
 class CompraViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet):
-    permission_classes = [IsAuthenticatedOrReadOnly, ]
+    permission_classes = [IsAuthenticated, ]
     serializer_class = CompraSerializer
     queryset = Compra.objects.all()
 
+
+    '''
+    /***************************************************************************
+    *Função: API que retorna lista de compras
+    *Descrição: 
+        Será feita uma query que retornará todas as compras do cliente logado.
+
+    * Parâmetros
+        request - objeto de HttpRequest
+
+    * Valor retornado
+        Retorna um JsonResponse com todas as compras com status 200.
+
+    * Assertiva de entrada
+        request.method == 'GET'
+        request.user.is_authenticated
+        request.user.is_cliente
+    ***************************************************************************/
+    '''
     @extend_schema(description='Retorna as compras do cliente logado. Não preencher o campo cliente, ele será puxado do usuario autenticado')
     def get_cliente_compras(self, request):
         try:
@@ -148,6 +277,26 @@ class CompraViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewsets
 
         return JsonResponse({"Compras":serializer.data}, status=status.HTTP_200_OK)
 
+
+    '''
+    /***************************************************************************
+    *Função: API que cria uma nova compra
+    *Descrição: 
+        Recebe uma requisição HTTP. É criada uma nova compra no banco de dados a partir das informações passadas, incluindo lista de produto e data compra. O usuario deve estar autenticado para que a compra seja associada a ele
+
+    * Parâmetros
+        request - objeto de HttpRequest
+
+    * Valor retornado
+        Caso a compra tenha sido criada, retorna uma Response com status 201_CREATED junto com os dados da nova compra.
+
+    * Assertiva de entrada
+        request.method == 'POST'
+        all(campo in request.data for campo in ['produtos', 'data_compra'])
+        request.user.is_authenticated
+        request.user.is_cliente
+    ***************************************************************************/
+    '''
     @extend_schema(description='Realiza uma nova compra no perfil do cliente logado. Não precisa preencher o campo cliente, ele será puxado do usuario autenticado')
     def post(self, request):
         try:
@@ -164,6 +313,25 @@ class CompraViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewsets
             serializer.save()
             return Response(serializer.data,status=status.HTTP_201_CREATED)
         
+
+    '''
+    /***************************************************************************
+    *Função: API que retorna uma compra pelo ID
+    *Descrição: 
+        Retorna uma única compra a partir do ID passado na URL.
+
+    * Parâmetros
+        request - objeto de HttpRequest
+        id - ID da compra desejada
+
+    * Valor retornado
+        Retorna uma Response com a compra em questão caso seja encontrada com status 200. Caso não encontre, retorna uma response com status 404.
+
+    * Assertiva de entrada
+        request.method == 'GET'
+        type(id) == int
+    ***************************************************************************/
+    '''
     def get_specific(self,request,id):
         try:
             compra = Compra.objects.get(pk=id)
@@ -172,7 +340,25 @@ class CompraViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewsets
         
         serializer = CompraSerializer(compra)
         return Response(serializer.data)
+    '''
+    /***************************************************************************
+    *Função: API que deleta uma compra pelo ID
+    *Descrição: 
+        Deleta uma compra com base no ID passado na URL.
 
+    * Parâmetros
+        request - objeto de HttpRequest
+        id - ID da compra desejada
+
+    * Valor retornado
+        Retorna uma Response status 204 caso a compra tenha sido encontrada e deletada. Caso não encontre, retorna uma response com status 404.
+
+    * Assertiva de entrada
+        request.method == 'DELETE'
+        type(id) == int
+        request.user.is_authenticated
+    ***************************************************************************/
+    '''
     def delete(self,request,id):
         try:
             compra = Compra.objects.get(pk=id)
@@ -201,11 +387,45 @@ class UsuarioViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewset
     queryset = Usuario.objects.all()
 
 
+    '''
+    /***************************************************************************
+    *Função: API que retorna lista de usuarios
+    *Descrição: 
+        Será         feita uma query a qual retornara todos os usuarios.
+
+    * Parametros
+        request - objeto de HttpRequest
+
+    * Valor retornado
+        Retorna um JsonResponse com todos os usuarios com status 200.
+
+    * Assertiva de entrada
+        request.method == 'GET'
+    ***************************************************************************/ 
+    '''
+
     @extend_schema(description='Retorna todos os usuarios do banco de dados')
     def get(self, request):
         usuarios = Usuario.objects.all()
         serializer = UsuarioSerializer(usuarios, many=True)
         return JsonResponse({"Usuarios": serializer.data})
+    
+    '''
+    /***************************************************************************
+    *Função: API que criar um novo usuario
+    *Descrição: 
+        Recebe uma requisição HTTP. É criado um novo objeto no banco de dados a partir das informações        passadas, sendo elas, username, email, password, telefone, is_cliente, is_fornecedor.
+
+    * Parametros
+        request - objeto de HttpRequest
+
+    * Valor retornado
+        Caso o objeto tenha sido criado, retorna uma Response com status 201_CREATED junto com os dados do novo usuario
+
+    * Assertica de entrada
+        request.method == 'POST'
+        all(campo in request.data for campo in['username', 'email', 'password', 'telefone','is_cliente','is_fornecedor'])
+    '''
     
     @extend_schema(description='Cria um usuario o qual devera ser cliente ou fornecedor')
     def post(self, request):
@@ -214,7 +434,24 @@ class UsuarioViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewset
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    
+    '''
+    /***************************************************************************
+    *Função: API que retorna um usuario pelo ID
+    *Descrição: 
+        Retorna um unico usuario a partir de id passada na URL
+
+    * Parametros
+        request - objeto de HttpRequest
+        id - id do usuario desejado
+
+    * Valor retornado
+        Retorna uma Response com o usuario em questão caso seja encontrado com status 200. Caso não encontre retona uma response com status 404
+
+    * Assertica de entrada
+        request.method == 'GET'
+        type(id) == int
+    ***************************************************************************/ 
+    '''
     def get_specific(self, request, id):
         try:
             usuario = Usuario.objects.get(pk=id)
@@ -224,6 +461,25 @@ class UsuarioViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewset
         serializer = UsuarioSerializer(usuario)
         return Response(serializer.data)
     
+
+    '''
+    /***************************************************************************
+    *Função: API atualiza um usuario pelo ID
+    *Descrição: 
+        Atualiza usuario com base no ID passado na URL
+
+    * Parametros
+        request - objeto de HttpRequest
+        id - id do usuario desejado
+
+    * Valor retornado
+        Retorna uma Response com o usuariio atualizado em questão caso seja encontrado com status 200. Caso não encontre retona uma response com status 404
+
+    * Assertica de entrada
+        request.method == 'PUT'
+        type(id) == int
+    ***************************************************************************/ 
+'''
     def put(self, request, id):
         try:
             usuario = Usuario.objects.get(pk=id)
@@ -236,6 +492,24 @@ class UsuarioViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewset
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+    '''
+    /***************************************************************************
+    *Função: API que deleta usuario pelo ID
+    *Descrição: 
+        Deleta usuario com base no ID passado na URL
+
+    * Parametros
+        request - objeto de HttpRequest
+        id - id do usuario desejado
+
+    * Valor retornado
+        Retorna uma Response status 204 caso o usuario tenha sido encontrado e deletado. Caso não encontre retona uma response com status 404
+
+    * Assertica de entrada
+        request.method == 'DELETE'
+        type(id) == int
+    ***************************************************************************/ 
+    '''
     def delete(self, request, id):
         try:
             usuario = Usuario.objects.get(pk=id)
@@ -251,35 +525,50 @@ class FornecedorViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, view
     serializer_class = FornecedorSerializer
     queryset = Fornecedor.objects.all()
 
+
+    '''
+    /***************************************************************************
+    *Função: API que retorna lista de fornecedores
+    *Descrição: 
+        Será         feita uma query a qual retornara todos os fornecedores.
+
+    * Parametros
+        request - objeto de HttpRequest
+
+    * Valor retornado
+        Retorna um JsonResponse com todos os fornecedores com status 200.
+
+    * Assertiva de entrada
+        request.method == 'GET'
+    ***************************************************************************/ 
+    '''
     @extend_schema(description='Retorna todos os fornecedores do banco de dados')
     def get(self, request):
         fornecedores = Fornecedor.objects.all()
         serializer = FornecedorSerializer(fornecedores, many=True)
         return JsonResponse({"fornecedores": serializer.data})
     
+
+    '''
+    /***************************************************************************
+    *Função: API que criar um novo fornecedor
+    *Descrição: 
+        Recebe uma requisição HTTP. É criado um novo objeto no banco de dados a partir das informações        passadas, sendo elas, 'nome_do_negocio', 'endereco', 'latitude', 'longitude', 'feira'. Deve ter um usuario is_fornecedor logado para que ele seja associado ao novo fornecedor.
+
+    * Parametros
+        request - objeto de HttpRequest
+
+    * Valor retornado
+        Caso o objeto tenha sido criado, retorna uma Response com status 201_CREATED junto com os dados do novo fornecedor
+
+    * Assertica de entrada
+        request.method == 'POST'
+        all(campo in request.data for campo in['nome_do_negocio', 'endereco', 'latitude', 'longitude', 'feira'])
+        request.user.is_authenticated
+        request.user.is_fornecedor
+    '''
     @extend_schema(description='Para criar um fornecedor é necessario estar logado com um usuario do tipo is_fornecedor para ele ser associado ao novo forncedor. Não é necessario incluir o campo fornecedor_user')
     def post(self, request):
-        # serializer = FornecedorSerializer(data=request.data)
-        # if serializer.is_valid():
-        #     serializer.save()
-        #     return Response(serializer.data, status=status.HTTP_201_CREATED)
-        # fields_usuario = ['username','email','telefone','password']
-        # fields_fornecedor = ['nome_do_negocio', 'endereco', 'latitude', 'longitude']
-
-        # dict_usuario = {key: value for key, value in request.data.items() if key in fields_usuario}
-
-        # dict_fornecedor = {key: value for key, value in request.data.items() if key in fields_fornecedor}
-
-        # dict_usuario['is_cliente'] = True
-
-        # serializer_usuario = UsuarioSerializer(data=dict_usuario)
-        # serializer_fornecedor = FornecedorSerializer(data=dict_fornecedor)
-        # if serializer_usuario.is_valid() and serializer_fornecedor.is_valid():
-        #     user = serializer_usuario.save()
-        #     fornecedor = serializer_fornecedor.save()
-        #     fornecedor.fornecedor_user = user
-
-        #     return Response(dict(request.data), status=status.HTTP_201_CREATED)
         data = request.data
         data["fornecedor_user"] = request.user.id
         
@@ -288,11 +577,30 @@ class FornecedorViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, view
             serializer.save()
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            print(serializer.errors)
 
 
 
 
-    
+    '''
+    /***************************************************************************
+    *Função: API que retorna um fornecedor pelo ID
+    *Descrição: 
+        Retorna um unico fornecedor a partir de id passada na URL
+
+    * Parametros
+        request - objeto de HttpRequest
+        id - id do fornecedor desejado
+
+    * Valor retornado
+        Retorna uma Response com o fornecedor em questão caso seja encontrado com status 200. Caso não encontre retona uma response com status 404
+
+    * Assertica de entrada
+        request.method == 'GET'
+        type(id) == int
+    ***************************************************************************/ 
+    '''
     def get_specific(self, request, id):
         try:
             fornecedor = Fornecedor.objects.get(pk=id)
@@ -302,6 +610,26 @@ class FornecedorViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, view
         serializer = FornecedorSerializer(fornecedor)
         return Response(serializer.data)
     
+
+    '''
+    /***************************************************************************
+    *Função: API atualiza um fornecedor pelo ID
+    *Descrição: 
+        Atualiza fornecedor com base no ID passado na URL
+
+    * Parametros
+        request - objeto de HttpRequest
+        id - id do fornecedor desejado
+
+    * Valor retornado
+        Retorna uma Response com o fornecedor atualizado em questão caso seja encontrado com status 200. Caso não encontre retona uma response com status 404
+
+    * Assertica de entrada
+        request.method == 'PUT'
+        type(id) == int
+        request.user.is_authenticated
+    ***************************************************************************/ 
+    '''
     def put(self, request, id):
         try:
             fornecedor = Fornecedor.objects.get(pk=id)
@@ -314,6 +642,25 @@ class FornecedorViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, view
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+    '''
+    /***************************************************************************
+    *Função: API que deleta fornecedor pelo ID
+    *Descrição: 
+        Deleta fornecedor com base no ID passado na URL
+
+    * Parametros
+        request - objeto de HttpRequest
+        id - id do usuario desejado
+
+    * Valor retornado
+        Retorna uma Response status 204 caso o usuario tenha sido encontrado e deletado. Caso não encontre retona uma response com status 404
+
+    * Assertica de entrada
+        request.method == 'DELETE'
+        type(id) == int
+        request.user.is_authenticated
+    ***************************************************************************/ 
+    '''
     def delete(self, request, id):
         try:
             fornecedor = Fornecedor.objects.get(pk=id)
@@ -329,7 +676,22 @@ class FeiraViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewsets.
     serializer_class = FeiraSerializer
     queryset = Feira.objects.all()
 
+    '''
+    /***************************************************************************
+    *Função: API que retorna lista de feiras
+    *Descrição: 
+        Será feita uma query que retornará todas as feiras disponíveis.
 
+    * Parâmetros
+        request - objeto de HttpRequest
+
+    * Valor retornado
+        Retorna um JsonResponse com todas as feiras com status 200.
+
+    * Assertiva de entrada
+        request.method == 'GET'
+    ***************************************************************************/
+    '''
     @extend_schema(description='Retorna todas as feiras cadastradas no sistema juntamente com seu ID. Feita para usar no cadastro de um Forncedor')
     def get(self, request):
         feiras = Feira.objects.all()
@@ -342,33 +704,49 @@ class ClienteViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewset
     serializer_class = ClienteSerializer
     queryset = Cliente.objects.all()
         
+    '''
+    /***************************************************************************
+    * Função: API que retorna lista de clientes
+    * Descrição:
+        Realiza uma query para retornar todos os clientes.
 
+    * Parâmetros
+        request - objeto de HttpRequest
+
+    * Valor retornado
+        Retorna um JsonResponse com todos os clientes com status 200.
+
+    * Assertiva de entrada
+        request.method == 'GET'
+    ***************************************************************************/
+    '''
     @extend_schema(description='Retorna todos os clientes do banco de dados')
     def get(self,request):
         usuarios = Cliente.objects.all()
         serializer = ClienteSerializer(usuarios, many=True)
         return JsonResponse({"usuarios": serializer.data})
     
+    '''
+    /***************************************************************************
+    * Função: API que cria um novo cliente
+    * Descrição:
+        Recebe uma requisição HTTP. Cria um novo objeto no banco de dados com as informações passadas, incluindo 'nome', 'email' e 'telefone'. 
+        O usuário logado deve ser do tipo cliente para ser associado ao novo cliente.
+
+    * Parâmetros
+        request - objeto de HttpRequest
+
+    * Valor retornado
+        Caso o objeto tenha sido criado, retorna uma Response com status 201_CREATED junto com os dados do novo cliente.
+
+    * Assertiva de entrada
+        request.method == 'POST'
+        all(campo in request.data for campo in ['nome', 'email', 'telefone'])
+        request.user.is_authenticated and request.user.is_cliente
+    ***************************************************************************/
+    '''
     @extend_schema(description='Para criar um cliente é necessario estar logado com um usuario do tipo is_cliente para ele ser associado ao novo cliente. Não é necessario incluir o campo cliente_user, ele irá ser preenchido com o usuario do tipo cliente autenticado')
     def post(self,request):
-
-        # fields_usuario = ['username','email','telefone','password']
-        # fields_cliente = ['preferencias_de_busca']
-
-        # dict_usuario = {key: value for key, value in request.data.items() if key in fields_usuario}
-
-        # dict_cliente = {key: value for key, value in request.data.items() if key in fields_cliente}
-
-        # dict_usuario['is_cliente'] = True
-
-        # serializer_usuario = UsuarioSerializer(data=dict_usuario)
-        # serializer_cliente = ClienteSerializer(data=dict_cliente)
-        # if serializer_usuario.is_valid() and serializer_cliente.is_valid():
-        #     user = serializer_usuario.save()
-        #     client = serializer_cliente.save()
-        #     client.cliente_user = user
-
-        #     return Response(dict(request.data), status=status.HTTP_201_CREATED)
         data = request.data
         data["cliente_user"] = request.user.id
         serializer = ClienteSerializer(data=data)
@@ -377,7 +755,25 @@ class ClienteViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewset
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         
-        
+    '''
+    /***************************************************************************
+    * Função: API que retorna um cliente pelo ID
+    * Descrição:
+        Retorna um único cliente com base no ID passado na URL.
+
+    * Parâmetros
+        request - objeto de HttpRequest
+        id - id do cliente desejado
+
+    * Valor retornado
+        Retorna uma Response com o cliente em questão caso seja encontrado com status 200. 
+        Caso não encontre, retorna uma response com status 404.
+
+    * Assertiva de entrada
+        request.method == 'GET'
+        type(id) == int
+    ***************************************************************************/
+    '''
     def get_specific(self,request, id):
         try:
             cliente = Cliente.objects.get(pk=id)
@@ -387,6 +783,28 @@ class ClienteViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewset
         serializer = ClienteSerializer(cliente)
         return Response(serializer.data)
     
+    '''
+    /***************************************************************************
+    * Função: API que atualiza um cliente pelo ID
+    * Descrição:
+        Atualiza o cliente com base no ID passado na URL.
+
+    * Parâmetros
+        request - objeto de HttpRequest
+        id - id do cliente desejado
+
+    * Valor retornado
+        Retorna uma Response com o cliente atualizado em questão caso seja encontrado com status 200. 
+        Caso não encontre, retorna uma response com status 404.
+
+    * Assertiva de entrada
+        request.method == 'PUT'
+        type(id) == int
+        request.user.is_authenticated
+    ***************************************************************************/
+    '''
+
+
     def put(self,request, id):
         try:
             cliente = Cliente.objects.get(pk=id)
@@ -399,6 +817,27 @@ class ClienteViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewset
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+
+    '''
+    /***************************************************************************
+    * Função: API que deleta um cliente pelo ID
+    * Descrição:
+        Deleta o cliente com base no ID passado na URL.
+
+    * Parâmetros
+        request - objeto de HttpRequest
+        id - id do cliente desejado
+
+    * Valor retornado
+        Retorna uma Response status 204 caso o cliente tenha sido encontrado e deletado. 
+        Caso não encontre, retorna uma response com status 404.
+
+    * Assertiva de entrada
+        request.method == 'DELETE'
+        type(id) == int
+        request.user.is_authenticated
+    ***************************************************************************/
+    '''
     def delete(self,request, id):
         try:
             cliente = Cliente.objects.get(pk=id)
@@ -414,13 +853,30 @@ class MensagemViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewse
     serializer_class = MensagemSerializer
     queryset = Mensagem.objects.all()
 
+    '''
+    /***************************************************************************
+    *Função: API que retorna lista de mensagens
+    *Descrição: 
+        Será feita uma query que retornará todas as mensagens entre dois usuarios.
 
+    * Parâmetros
+        request - objeto de HttpRequest
+        user1 - id do usuario 1
+        user2 - id do usuario 2
+
+    * Valor retornado
+        Retorna um JsonResponse com todas as mensagens entre os usuarios com status 200.
+
+    * Assertiva de entrada
+        request.method == 'GET'
+    ***************************************************************************/
+    '''
     @extend_schema(description='Retorna todas as mensagens entre user1 e user2. Retorna de maneira ordenada')
     def get_msg_cliente_fornecedor(self,request,user1,user2):
         mensagens = Mensagem.objects.filter((Q(destinatario=user1) & Q(remetente=user2)) | (Q(destinatario=user2) & Q(remetente=user1))).order_by('data_envio')
 
-        for msg in mensagens:
-            print(msg.__dict__)
+        # for msg in mensagens:
+        #     print(msg.__dict__)
 
         serializer = MensagemSerializer(mensagens, many=True)
 
@@ -428,6 +884,24 @@ class MensagemViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewse
 
         return JsonResponse({"mensagens": serializer.data})
     
+    '''
+    /***************************************************************************
+    *Função: API que criar uma nova mensagem
+    *Descrição: 
+        Recebe uma requisição HTTP. É criada uma nova mensagem no banco de dados a partir das informações passadas, incluindo 'destinatario', 'conteudo' e 'data_envio'. O usuario devera estar autenticado para que ele seja o remetente da mensagem no banco de dados
+
+    * Parâmetros
+        request - objeto de HttpRequest
+
+    * Valor retornado
+        Caso a mensagem tenha sido criada, retorna uma Response com status 201_CREATED junto com os dados da nova mensagem.
+
+    * Assertiva de entrada
+        request.method == 'POST'
+        all(campo in request.data for campo in ['destinatario', 'conteudo', 'data_envio'])
+        request.user.is_authenticated
+    ***************************************************************************/
+    '''
     @extend_schema(description='Cria uma nova mensagem. O remetente será o usuario autenticado e o destinatario será o id de um Usuario')
     def post(self,request):
         # data = request.data
@@ -455,13 +929,50 @@ class AvaliacaoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, views
     queryset = Avaliacao.objects.all()
         
 
+    '''
+    /***************************************************************************
+    *Função: API que retorna lista de avaliações
+    *Descrição: 
+        Será feita uma query que retornará todas as avaliações.
+
+    * Parâmetros
+        request - objeto de HttpRequest
+
+    * Valor retornado
+        Retorna um JsonResponse com todas as avaliações com status 200.
+
+    * Assertiva de entrada
+        request.method == 'GET'
+    ***************************************************************************/
+    '''
+
     @extend_schema(description='retorna todas as avaliações do banco de dados. Filtragem baseada em produto ainda não feita')
     def get(self,request):
-        print(request.user.id)
+        # print(request.user.id)
         avaliacoes = Avaliacao.objects.all()
         serializer = AvaliacaoSerializer(avaliacoes, many=True)
         return JsonResponse({"avaliacoes": serializer.data})
     
+
+    '''
+    /***************************************************************************
+    *Função: API que criar uma nova avaliação
+    *Descrição: 
+        Recebe uma requisição HTTP. É criada uma nova avaliação no banco de dados a partir das informações passadas, incluindo 'produto' ,'nota' e 'comentario'. É necessario estar autenticado para que a nova avaliação seja associada ao usuario
+
+    * Parâmetros
+        request - objeto de HttpRequest
+
+    * Valor retornado
+        Caso a avaliação tenha sido criada, retorna uma Response com status 201_CREATED junto com os dados da nova avaliação.
+
+    * Assertiva de entrada
+        request.method == 'POST'
+        all(campo in request.data for campo in ['produto', 'nota','comentario'])
+        request.user.is_authenticated
+        request.user.is_cliente
+    ***************************************************************************/
+    '''
 
     @extend_schema(description='Cria nova avaliação. Para usar deve estar autenticado com um cliente para preencher o campo cliente. Não é necessario preencher o campo cliente')
     def post(self,request):
@@ -473,7 +984,24 @@ class AvaliacaoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, views
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         
 
+    '''
+    /***************************************************************************
+    *Função: API que retorna uma avaliação pelo ID
+    *Descrição: 
+        Retorna uma única avaliação a partir do ID passado na URL.
 
+    * Parâmetros
+        request - objeto de HttpRequest
+        id - ID da avaliação desejada
+
+    * Valor retornado
+        Retorna uma Response com a avaliação em questão caso seja encontrada com status 200. Caso não encontre, retorna uma response com status 404.
+
+    * Assertiva de entrada
+        request.method == 'GET'
+        type(id) == int
+    ***************************************************************************/
+    '''
         
     def get_specific(self,request, id):
         try:
@@ -484,7 +1012,25 @@ class AvaliacaoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, views
         serializer = AvaliacaoSerializer(avaliacao)
         return Response(serializer.data)
     
+    '''
+    /***************************************************************************
+    *Função: API atualiza uma avaliação pelo ID
+    *Descrição: 
+        Atualiza uma avaliação com base no ID passado na URL.
 
+    * Parâmetros
+        request - objeto de HttpRequest
+        id - ID da avaliação desejada
+
+    * Valor retornado
+        Retorna uma Response com a avaliação atualizada em questão caso seja encontrada com status 200. Caso não encontre, retorna uma response com status 404.
+
+    * Assertiva de entrada
+        request.method == 'PUT'
+        type(id) == int
+        request.user.is_authenticated
+    ***************************************************************************/
+    '''
     
     def put(self,request, id):
         try:
@@ -498,6 +1044,26 @@ class AvaliacaoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, views
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+
+    '''
+    /***************************************************************************
+    *Função: API que deleta uma avaliação pelo ID
+    *Descrição: 
+        Deleta uma avaliação com base no ID passado na URL.
+
+    * Parâmetros
+        request - objeto de HttpRequest
+        id - ID da avaliação desejada
+
+    * Valor retornado
+        Retorna uma Response status 204 caso a avaliação tenha sido encontrada e deletada. Caso não encontre, retorna uma response com status 404.
+
+    * Assertiva de entrada
+        request.method == 'DELETE'
+        type(id) == int
+        request.user.is_authenticated
+    ***************************************************************************/
+    '''
     def delete(self,request, id):
         try:
             avaliacao = Avaliacao.objects.get(pk=id)
@@ -516,7 +1082,7 @@ class RelatorioViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, views
 
     @extend_schema(description='Retorna todos os relatorios do banco de dados')
     def get(self,request):
-        print(request.user.id)
+        # print(request.user.id)
         relatorios = Relatorio.objects.all()
         serializer = RelatorioSerializer(relatorios, many=True)
         return JsonResponse({"relatorios": serializer.data})

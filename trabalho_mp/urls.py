@@ -37,7 +37,7 @@ urlpatterns = [
     path('categorias/', views.CategoriaViewSet.as_view({"get":"get"})),
 
     #Compras
-    path("cliente/compras", views.CompraViewSet.as_view({"get":"get_cliente_compras","post":"post"})),
+    path("cliente/compras/", views.CompraViewSet.as_view({"get":"get_cliente_compras","post":"post"})),
     path("cliente/compras/<int:id>", views.CompraViewSet.as_view({"get":"get_specific","delete":"delete"})),
 
 

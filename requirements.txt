@@ -3,3 +3,6 @@ djangorestframework==3.14.0
 drf-spectacular
 djangorestframework-simplejwt
 django-cors-headers
+coverage
+pytest-factoryboy
+pytest
