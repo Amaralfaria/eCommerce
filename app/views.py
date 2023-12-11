@@ -1139,6 +1139,9 @@ def index(request):
 def criar_usuario(request):
     return render(request, 'criarUsuario.html')
 
+def login(request):
+    return render(request,'login.html')
+
 def produto_especifico(request, id):
     context = {
         "id": id

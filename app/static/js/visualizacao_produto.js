@@ -9,8 +9,8 @@ document.addEventListener('DOMContentLoaded', function () {
     // Variável para armazenar as informações do produto
     let productInfo;
 
-    localStorage.setItem("access_token", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzAyMzg4MjMwLCJpYXQiOjE3MDIzMDE4MzAsImp0aSI6ImE4NmE4YWViMzgyNjQ4ZjZiMDIzZjdhMzlkODdlOWRmIiwidXNlcl9pZCI6Mn0.v_DnguJy2dWKyxeuLRiC1i3B0Z4UP3P1utTWp_bnZBc")
-    localStorage.setItem("refresh_token", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTcwNDg5MzgzMCwiaWF0IjoxNzAyMzAxODMwLCJqdGkiOiIxMTM3ZTc3ZDRhMTg0ZTliOTlkN2RmYmQwMzk1NGJhZiIsInVzZXJfaWQiOjJ9.EFlT9tXlGVtFPu6kkhwgvinZInCsi6T2v-3cPyJte20")
+    // localStorage.setItem("access_token", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzAyMzg4MjMwLCJpYXQiOjE3MDIzMDE4MzAsImp0aSI6ImE4NmE4YWViMzgyNjQ4ZjZiMDIzZjdhMzlkODdlOWRmIiwidXNlcl9pZCI6Mn0.v_DnguJy2dWKyxeuLRiC1i3B0Z4UP3P1utTWp_bnZBc")
+    // localStorage.setItem("refresh_token", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTcwNDg5MzgzMCwiaWF0IjoxNzAyMzAxODMwLCJqdGkiOiIxMTM3ZTc3ZDRhMTg0ZTliOTlkN2RmYmQwMzk1NGJhZiIsInVzZXJfaWQiOjJ9.EFlT9tXlGVtFPu6kkhwgvinZInCsi6T2v-3cPyJte20")
 
     // Função para buscar dados da primeira API
     fetch(firstApiUrl)

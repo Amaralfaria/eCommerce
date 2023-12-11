@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-h)diov00%(&5)2#5weue^8xg!1zyy(1!8y$#=s!lsf67^bx9_g
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost','127.0.0.1']
 
 
 # Application definition
@@ -55,7 +55,6 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -65,8 +64,15 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:4200',
-    "http://127.0.0.1:5500"
+    "http://127.0.0.1:5500",
+    "http://127.0.0.1:8000",
+    "https://127.0.0.1:8000"
 ]
+
+CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8000']
+CSRF_COOKIE_SECURE = False  # Configurar como True em um ambiente de produção com HTTPS
+CSRF_COOKIE_HTTPONLY = False
+SESSION_COOKIE_SECURE = False
 
 ROOT_URLCONF = 'trabalho_mp.urls'
 
@@ -184,3 +190,5 @@ SIMPLE_JWT = {
 }
 
 AUTH_USER_MODEL = 'app.Usuario'
+
+
