@@ -46,6 +46,11 @@ INSTALLED_APPS = [
     'corsheaders',
 ]
 
+STATICFILES_DIRS = [
+    # outros diretórios estáticos, se houver
+    os.path.join(BASE_DIR, 'app/static'),
+]
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

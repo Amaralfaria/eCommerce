@@ -19,7 +19,7 @@ from django.urls import path
 from app import views
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from rest_framework_simplejwt.views import TokenRefreshView, TokenObtainPairView, TokenVerifyView
-from app.views import index
+from app.views import index, criar_usuario
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -73,7 +73,9 @@ urlpatterns = [
     path('token/verify', TokenVerifyView.as_view(), name="token_verify"),
     path('token/refresh', TokenRefreshView.as_view(), name="token_refresh"),
 
-    path('', index, name='index')
+    #templates
+    path('', index, name='index'),
+    path('criar_usuario/', criar_usuario,name='criacao de usuario')
 
 
 ]

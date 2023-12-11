@@ -424,6 +424,8 @@ class UsuarioViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewset
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            print(serializer.errors)
 
     '''
     /***************************************************************************
@@ -1119,6 +1121,10 @@ class AvaliacaoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, views
 
 def index(request):
     return render(request, 'index.html')
+
+
+def criar_usuario(request):
+    return render(request, 'criarUsuario.html')
 
 
 
