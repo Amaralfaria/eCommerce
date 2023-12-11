@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+
+        .product-container {
+            max-width: 600px;
+            margin: auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1, h2 {
+            color: #333;
+        }
+
+        p {
+            color: #666;
+        }
+
+        .price {
+            color: #e44d26;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .category, .supplier {
+            margin-top: 10px;
+            color: #555;
+        }
+
+        .buy-button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin-top: 15px;
+            background-color: #e44d26;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .buy-button:hover {
+            background-color: #333;
+        }
+
+        /* Estilos para a seção de avaliações */
+        .reviews-container {
+            margin-top: 20px;
+        }
+
+        .review {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+
+        .review h3 {
+            color: #e44d26;
+            margin-bottom: 10px;
+        }
+
+        .review p {
+            color: #333;
+        }
+
+        .review-rating {
+            display: inline-block;
+            background-color: #e44d26;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            margin-top: 5px;
+        }
+
+        /* Estilos para o formulário de criação de avaliação */
+        #createReviewForm {
+            margin-top: 20px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #createReviewForm label {
+            display: block;
+            margin-top: 10px;
+            color: #333;
+        }
+
+        #createReviewForm input,
+        #createReviewForm textarea,
+        #createReviewForm button {
+            margin-top: 10px;
+        }
+
+        .reviews-container{
+            max-width: 600px;
+            margin: auto;
+            margin-top: 30px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+    </style>
+    <title>Detalhes do Produto</title>
+    {% load static %}
+    <script src="{% static 'js/visualizacao_produto.js' %}"></script>
+</head>
+<body>
+    <span hidden id="id_produto">{{id}}</span>
+    <div class="product-container" id="productContainer">
+        <!-- Informações do produto serão exibidas aqui -->
+    </div>
+
+    <!-- Seção de Avaliações -->
+    <div class="reviews-container" id="reviewsContainer">
+        <div id="createReviewForm">
+            <h3>Criar uma nova avaliação</h3>
+            <form>
+                <label for="reviewComment">Comentário:</label>
+                <textarea id="reviewComment" required></textarea>
+
+                <label for="reviewRating">Nota:</label>
+                <input type="number" id="reviewRating" min="1" max="5" required>
+
+                <button type="button" onclick="criarAvaliacao()">Enviar Avaliação</button>
+            </form>
+        </div>
+
+        <h2>Avaliações</h2>
+        <div id="reviewsList">
+            <!-- As avaliações serão exibidas aqui -->
+        </div>
+
+        <!-- Formulário para criar uma nova avaliação -->
+    </div>
+
+</body>
+</html>

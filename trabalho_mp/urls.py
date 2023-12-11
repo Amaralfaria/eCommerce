@@ -19,7 +19,7 @@ from django.urls import path
 from app import views
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from rest_framework_simplejwt.views import TokenRefreshView, TokenObtainPairView, TokenVerifyView
-from app.views import index, criar_usuario
+from app.views import index, criar_usuario, produto_especifico
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -32,6 +32,7 @@ urlpatterns = [
 
     #categorias
     path('categorias/', views.CategoriaViewSet.as_view({"get":"get"})),
+    path('categorias/<int:id>', views.CategoriaViewSet.as_view({"get":"get_specific"})),
 
     #Compras
     path("cliente/compras/", views.CompraViewSet.as_view({"get":"get_cliente_compras","post":"post"})),
@@ -54,8 +55,9 @@ urlpatterns = [
     path('mensagens/', views.MensagemViewSet.as_view({"post":"post"})),
 
     #avaliacoes
-    path('avaliacoes/', views.AvaliacaoViewSet.as_view({"get":"get","post":"post"})),
+    path('avaliacoes_produto/<int:id>', views.AvaliacaoViewSet.as_view({"get":"get"})),
     path('avaliacoes/<int:id>', views.AvaliacaoViewSet.as_view({"get":"get_specific","put":"put","delete":"delete"})),
+    path('avaliacoes/', views.AvaliacaoViewSet.as_view({"post":"post","get":"get_all"})),
 
     #relatorios
     # path('relatorios/', views.RelatorioViewSet.as_view({"get":"get","post":"post"})),
@@ -75,7 +77,6 @@ urlpatterns = [
 
     #templates
     path('', index, name='index'),
-    path('criar_usuario/', criar_usuario,name='criacao de usuario')
-
-
+    path('criar_usuario/', criar_usuario,name='criacao de usuario'),
+    path('visualizar_produto/<int:id>',produto_especifico, name='visualização de produto unico')
 ]

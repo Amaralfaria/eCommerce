@@ -240,6 +240,11 @@ class CategoriaViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, views
         categorias = Categoria.objects.all()
         serializer = CategoriaSerializer(categorias, many=True)
         return JsonResponse({"categorias":serializer.data})
+    
+    def get_specific(self, request, id):
+        categoria = Categoria.objects.get(pk=id)
+        serializer = CategoriaSerializer(categoria)
+        return Response(serializer.data)
 
 
 class CompraViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet):
@@ -938,10 +943,17 @@ class AvaliacaoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, views
     ***************************************************************************/
     '''
 
-    @extend_schema(description='retorna todas as avaliações do banco de dados')
-    def get(self,request):
-        # print(request.user.id)
+    @extend_schema(description='retorna todas as avaliações de um produto do banco de dados')
+
+    def get_all(self,request):
         avaliacoes = Avaliacao.objects.all()
+        serializer = AvaliacaoSerializer(avaliacoes, many=True)
+        return JsonResponse({"avaliacoes": serializer.data})
+
+
+    def get(self,request, id):
+        # print(request.user.id)
+        avaliacoes = Avaliacao.objects.filter(produto=id)
         serializer = AvaliacaoSerializer(avaliacoes, many=True)
         return JsonResponse({"avaliacoes": serializer.data})
     
@@ -972,7 +984,8 @@ class AvaliacaoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, views
         data["cliente"] = Cliente.objects.get(cliente_user=request.user).id
         serializer = AvaliacaoSerializer(data=data)
         if serializer.is_valid():
-            serializer.save()
+            ava = serializer.save()
+            print(serializer.data)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         
 
@@ -1125,6 +1138,12 @@ def index(request):
 
 def criar_usuario(request):
     return render(request, 'criarUsuario.html')
+
+def produto_especifico(request, id):
+    context = {
+        "id": id
+    }
+    return render(request, 'produto.html', context)
 
 
 
