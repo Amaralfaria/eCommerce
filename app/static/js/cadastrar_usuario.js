@@ -2,7 +2,7 @@ function cadastrarUsuario(){
     var username = document.getElementById("username").value;
     var email = document.getElementById("email").value;
     var password = document.getElementById("password").value;
-    var is_fornecedor = document.getElementById("is_fornecedor").value;
+    var is_fornecedor = document.getElementById("is_fornecedor").checked;
     var telefone = document.getElementById("telefone").value;
 
     // Monta os dados do novo usuário
@@ -26,10 +26,56 @@ function cadastrarUsuario(){
     })
         .then(response => {
             if (response.status === 201) {
-                console.log(201)
-                window.location.href = 'http://localhost:8000/';
+                if(!is_fornecedor){
+                    const urlToken = 'http://localhost:8000/token/'
+
+                    var credencials = {
+                        "username": username,
+                        "password": password,
+                    }
+
+                    return fetch(urlToken,{
+                        method: "POST",
+                        headers:{
+                            "Content-Type": "application/json",
+                            "accept": "application/json"
+                        },
+                        body: JSON.stringify(credencials)
+                    })
+                }else{
+                    window.location.href = 'http://localhost:8000/home/';
+                }
             } else {
                 throw new Error('Erro na requisição: ' + response.status);
+            }
+        })
+        .then(response => response.json())
+        .then(token => {
+            localStorage.setItem("access_token",token.access);
+            localStorage.setItem("refresh_token",token.refresh);
+
+            const urlClient = 'http://localhost:8000/cliente/'
+            
+            novo_cliente = {
+                "preferencias_de_busca": null
+            }
+
+            return fetch(urlClient,{
+                method: "POST",
+                headers:{
+                    "Content-Type": "application/json",
+                    "accept": "application/json",
+                    'Authorization': `Bearer ${token.access}`,
+                },
+                body : JSON.stringify(novo_cliente)
+            })
+
+        })
+        .then(response => {
+            if(response.status == 201){
+                window.location.href = 'http://localhost:8000/home/';
+            }else{
+                console.log('Erro ao criar cliente')
             }
         })
 }
