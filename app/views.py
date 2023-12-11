@@ -1154,6 +1154,9 @@ def criar_fornecedor(request):
 def criar_produto(request):
     return render(request,'cadastro_produto.html')
 
+def produtos_comprados(request):
+    return render(request,'produtos_comprados.html')
+
 
 
 
