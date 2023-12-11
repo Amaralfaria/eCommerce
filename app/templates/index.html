@@ -3,6 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <title>Marketplace</title>
+
+    <style>
+        .product-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+
+        .product-card {
+            width: 200px;
+            margin: 10px;
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .product-card img {
+            max-width: 100px;
+            max-height: 100px;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 16px;
+            color: #333;
+        }
+    </style>
+    {% load static %}
+    <script src="{% static 'js/script.js' %}"></script>
     <link rel="stylesheet" href="static/css/style.css">
 </head>
 <body>
@@ -17,10 +48,9 @@
         </div>
     </header>
     <main>
-        <section id="produtos">
-            <!-- Os produtos serão carregados aqui -->
-        </section>
+        <div class="product-container" id="productContainer">
+        <!-- Os produtos serão preenchidos dinamicamente via JavaScript -->
+        </div>
     </main>
-    <script src="static/js/script.js"></script>
 </body>
 </html>
