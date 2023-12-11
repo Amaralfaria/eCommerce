@@ -173,6 +173,29 @@ class TestFornecedorEndpoints(APITestCase):
         self.client = APIClient()
         self.usuario_factory = UsuarioFactory
 
+    def test_fornecedor_post(self):
+        fornecedor = self.fornecedor_factory()
+        usuario = UsuarioFactory()
+        fornecedor.fornecedor_user = usuario
+        Usuario.objects.update(is_cliente=False, is_fornecedor=True)
+        usuario.set_password('password')
+        usuario.save()
+
+        self.client.login(username=usuario.username, password='password')
+
+        novo_fornecedor = {
+            "nome_do_negocio": "biju teste",
+            "endereco": "rua",
+            "latitude": 50,
+            "longitude": 50,
+            "feira": FeiraFactory().id,
+        }
+
+        response = self.client.post(self.endpoint, data=json.dumps(novo_fornecedor), content_type='application/json')
+
+        assert response.status_code == 201
+
+
     def test_fornecedor_get(self):
         self.fornecedor_factory.create_batch(4)
         Usuario.objects.update(is_cliente=False, is_fornecedor=True)
@@ -182,26 +205,6 @@ class TestFornecedorEndpoints(APITestCase):
         assert response.status_code == 200
         assert len(json.loads(response.content)['fornecedores']) == 4
 
-    # def test_fornecedor_post(self):
-    #     fornecedor = self.fornecedor_factory()
-    #     usuario = fornecedor.fornecedor_user
-    #     Usuario.objects.update(is_cliente=False, is_fornecedor=True)
-    #     usuario.set_password('password')
-    #     usuario.save()
-
-    #     self.client.login(username=usuario.username, password='password')
-
-    #     novo_fornecedor = {
-    #         "nome_do_negocio": "biju teste",
-    #         "endereco": "rua",
-    #         "latitude": 50,
-    #         "longitude": 50,
-    #         "feira": FeiraFactory().id,
-    #     }
-
-    #     response = self.client.post(self.endpoint, data=json.dumps(novo_fornecedor), content_type='application/json')
-
-    #     assert response.status_code == 201
 
     def test_fornecedor_get_specific(self):
         fornecedor = self.fornecedor_factory()

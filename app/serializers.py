@@ -72,15 +72,15 @@ class AvaliacaoSerializer(serializers.ModelSerializer):
         read_only_fields = ['id']
 
 
-class RelatorioSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Relatorio
-        fields = ['id','dados_de_uso']
-        read_only_fields = ['id']
+# class RelatorioSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Relatorio
+#         fields = ['id','dados_de_uso']
+#         read_only_fields = ['id']
 
-class AutenticacaoSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Usuario
-        fields = ['email', 'password']
-        read_only_fields = ['email','password']
+# class AutenticacaoSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Usuario
+#         fields = ['email', 'password']
+#         read_only_fields = ['email','password']
     

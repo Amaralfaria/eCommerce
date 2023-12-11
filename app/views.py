@@ -1088,56 +1088,56 @@ class AvaliacaoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, views
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class RelatorioViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet):
-    permission_classes = [AllowAny, ] 
-    serializer_class = RelatorioSerializer
-    queryset = Relatorio.objects.all()
+# class RelatorioViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet):
+#     permission_classes = [AllowAny, ] 
+#     serializer_class = RelatorioSerializer
+#     queryset = Relatorio.objects.all()
         
 
-    @extend_schema(description='Retorna todos os relatorios do banco de dados')
-    def get(self,request):
-        # print(request.user.id)
-        relatorios = Relatorio.objects.all()
-        serializer = RelatorioSerializer(relatorios, many=True)
-        return JsonResponse({"relatorios": serializer.data})
+#     @extend_schema(description='Retorna todos os relatorios do banco de dados')
+#     def get(self,request):
+#         # print(request.user.id)
+#         relatorios = Relatorio.objects.all()
+#         serializer = RelatorioSerializer(relatorios, many=True)
+#         return JsonResponse({"relatorios": serializer.data})
     
-    def post(self,request):
-        serializer = RelatorioSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+#     def post(self,request):
+#         serializer = RelatorioSerializer(data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
         
 
 
         
-    def get_specific(self,request, id):
-        try:
-            relatorio = Relatorio.objects.get(pk=id)
-        except Relatorio.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+#     def get_specific(self,request, id):
+#         try:
+#             relatorio = Relatorio.objects.get(pk=id)
+#         except Relatorio.DoesNotExist:
+#             return Response(status=status.HTTP_404_NOT_FOUND)
     
-        serializer = RelatorioSerializer(relatorio)
-        return Response(serializer.data)
+#         serializer = RelatorioSerializer(relatorio)
+#         return Response(serializer.data)
     
-    def put(self,request, id):
-        try:
-            relatorio = Relatorio.objects.get(pk=id)
-        except Relatorio.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+#     def put(self,request, id):
+#         try:
+#             relatorio = Relatorio.objects.get(pk=id)
+#         except Relatorio.DoesNotExist:
+#             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        serializer = RelatorioSerializer(relatorio, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    def delete(self,request, id):
-        try:
-            relatorio = Relatorio.objects.get(pk=id)
-        except Relatorio.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+#         serializer = RelatorioSerializer(relatorio, data=request.data, partial=True)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#     def delete(self,request, id):
+#         try:
+#             relatorio = Relatorio.objects.get(pk=id)
+#         except Relatorio.DoesNotExist:
+#             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        relatorio.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+#         relatorio.delete()
+#         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 

@@ -63,7 +63,7 @@ urlpatterns = [
     #relatorios
     # path('relatorios/', views.RelatorioViewSet.as_view({"get":"get","post":"post"})),
     # path('relatorios/<int:id>', views.RelatorioViewSet.as_view({"get":"get_specific","put":"put","delete":"delete"})),
-    path('relatorios/', views.RelatorioViewSet.as_view({"get":"get","post":"post"})),
+    # path('relatorios/', views.RelatorioViewSet.as_view({"get":"get","post":"post"})),
 
 
     #Clientes

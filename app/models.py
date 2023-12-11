@@ -186,23 +186,23 @@ class Avaliacao(models.Model):
         return f"Avaliação de {self.usuario.username} para {self.produto.nome}"
 
 
-class RelatorioPesquisas(models.Model):
-    pesquisa = models.TextField()
-    data_pesquisa = models.DateField(auto_now_add=True)
+# class RelatorioPesquisas(models.Model):
+#     pesquisa = models.TextField()
+#     data_pesquisa = models.DateField(auto_now_add=True)
 
 
 
-class Relatorio(models.Model):
-    dados_de_uso = models.JSONField()
+# class Relatorio(models.Model):
+#     dados_de_uso = models.JSONField()
 
-    def clean(self):
-        # Verifica se 'dados_de_uso' não está vazio
-        if not self.dados_de_uso:
-            raise ValidationError({'dados_de_uso': 'Dados de uso não podem estar vazios.'})
+#     def clean(self):
+#         # Verifica se 'dados_de_uso' não está vazio
+#         if not self.dados_de_uso:
+#             raise ValidationError({'dados_de_uso': 'Dados de uso não podem estar vazios.'})
 
-        # Aqui você pode adicionar outras validações necessárias
+#         # Aqui você pode adicionar outras validações necessárias
 
-    def __str__(self):
-        return f"Relatório {self.id}"
+#     def __str__(self):
+#         return f"Relatório {self.id}"
 
 

@@ -1,5 +1,5 @@
 from django.test import TestCase
-from app.models import Usuario, Fornecedor, Produto, Avaliacao, Relatorio
+from app.models import Usuario, Fornecedor, Produto, Avaliacao
 from django.core.exceptions import ValidationError
 import json
 
@@ -103,16 +103,7 @@ class AvaliacaoTestCase(TestCase):
             avaliacao.full_clean()
 
 
-class RelatorioTestCase(TestCase):
 
-    def test_relatorio_valido(self):
-        relatorio = Relatorio(dados_de_uso={"alguma": "informação"})
-        relatorio.full_clean()
-
-    def test_relatorio_invalido(self):
-        relatorio = Relatorio(dados_de_uso={})
-        with self.assertRaises(ValidationError):
-            relatorio.full_clean()
 
 
 

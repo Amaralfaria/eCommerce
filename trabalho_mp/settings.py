@@ -60,6 +60,7 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:4200',
+    "http://127.0.0.1:5500"
 ]
 
 ROOT_URLCONF = 'trabalho_mp.urls'
