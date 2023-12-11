@@ -1135,6 +1135,9 @@ class AvaliacaoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, views
 def index(request):
     return render(request, 'index.html')
 
+def home(request):
+    return render(request,'home.html')
+
 
 def criar_usuario(request):
     return render(request, 'criarUsuario.html')

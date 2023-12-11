@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Marketplace</title>
+
+    <style>
+        .product-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+
+        .product-card {
+            width: 200px;
+            margin: 10px;
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .product-card img {
+            max-width: 100px;
+            max-height: 100px;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 16px;
+            color: #333;
+        }
+    </style>
+    {% load static %}
+    <script src="{% static 'js/home.js' %}"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <header>
+        <h1>Marketplace</h1>
+        <nav>
+            <a href="login.html">Login/Cadastro</a>
+        </nav>
+        <div>
+            <input type="text" id="barra-pesquisa" placeholder="Pesquisar produtos...">
+            <button onclick="pesquisarProdutos()">Pesquisar</button>
+        </div>
+    </header>
+    <main>
+        <div class="product-container" id="productContainer">
+        <!-- Os produtos serão preenchidos dinamicamente via JavaScript -->
+        </div>
+    </main>
+</body>
+</html>
