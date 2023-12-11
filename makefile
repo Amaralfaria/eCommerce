@@ -2,7 +2,7 @@ start:
 	python3 manage.py runserver
 
 test:
-	coverage report --omit="*/migrations/*"
+	python -m pytest --cov=app
 
 
 .PHONY: start
