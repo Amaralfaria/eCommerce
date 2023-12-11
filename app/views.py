@@ -10,7 +10,7 @@ from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnl
 from datetime import date
 from drf_spectacular.utils import extend_schema
 from django.db.models.functions import ACos, Cos, Radians, Sin
-
+from django.shortcuts import render
 
 
 
@@ -211,7 +211,6 @@ class ProdutoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewset
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
- 
 class CategoriaViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet):
     permission_classes = [IsAuthenticatedOrReadOnly, ]
     serializer_class = CategoriaSerializer
@@ -238,7 +237,6 @@ class CategoriaViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, views
         categorias = Categoria.objects.all()
         serializer = CategoriaSerializer(categorias, many=True)
         return JsonResponse({"categorias":serializer.data})
-
 
 
 class CompraViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet):
@@ -368,18 +366,6 @@ class CompraViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewsets
         compra.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
     
-
-
-
-
-        
-
-
-
-
-
-    
-
 
 class UsuarioViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet):
     permission_classes = [AllowAny,]
@@ -913,15 +899,6 @@ class MensagemViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewse
         else:
             print(serializer.errors)
 
-    
-
-        
-
-    
-
-
-
-    
 
 class AvaliacaoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet):
     permission_classes = [IsAuthenticatedOrReadOnly, ] 
@@ -1126,6 +1103,8 @@ class RelatorioViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, views
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+def index(request):
+    return render(request, 'index.html')
 
 
 
