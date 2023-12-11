@@ -572,7 +572,7 @@ class FornecedorViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, view
     def post(self, request):
         data = request.data
         data["fornecedor_user"] = request.user.id
-        
+        print(data["fornecedor_user"])
         serializer = FornecedorSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
@@ -1147,6 +1147,9 @@ def produto_especifico(request, id):
         "id": id
     }
     return render(request, 'produto.html', context)
+
+def criar_fornecedor(request):
+    return render(request,'criarFornecedor.html')
 
 
 
