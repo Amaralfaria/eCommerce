@@ -855,7 +855,7 @@ class ClienteViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewset
 
 
 class MensagemViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet):
-    permission_classes = [IsAuthenticatedOrReadOnly, ]
+    permission_classes = [IsAuthenticated, ]
     serializer_class = MensagemSerializer
     queryset = Mensagem.objects.all()
 
@@ -878,8 +878,22 @@ class MensagemViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewse
     ***************************************************************************/
     '''
     @extend_schema(description='Será feita uma query que retornará todas as mensagens entre dois usuarios. Retorna de maneira ordenada')
-    def get_msg_cliente_fornecedor(self,request,user1,user2):
-        mensagens = Mensagem.objects.filter((Q(destinatario=user1) & Q(remetente=user2)) | (Q(destinatario=user2) & Q(remetente=user1))).order_by('data_envio')
+    def get_msg_cliente_fornecedor(self,request,user2):
+        user1 = request.user.id
+
+        print('usuarios',user1, user2)
+
+        mensagens = Mensagem.objects.filter((Q(destinatario_id=user1) & Q(remetente_id=user2)) | (Q(destinatario_id=user2) & Q(remetente_id=user1))).order_by('data_envio')
+
+        print("a")
+
+        m = Mensagem.objects.all()
+
+        for mm in m:
+            print(mm.__dict__)
+
+        for mensagem in mensagens:
+            print(mensagem.__dict__)
 
         # for msg in mensagens:
         #     print(msg.__dict__)
@@ -1137,6 +1151,13 @@ def index(request):
 
 def home(request):
     return render(request,'home.html')
+
+
+def chat(request, id):
+    context = {
+        "id": id
+    }
+    return render(request,'chat.html',context)
 
 
 def criar_usuario(request):

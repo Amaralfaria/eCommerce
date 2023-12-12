@@ -42,12 +42,17 @@ document.addEventListener('DOMContentLoaded', function () {
                 <p class="supplier">Fornecedor: ${fornecedorInfo.nome_do_negocio}</p>
                 <p class="price">Preço: R$ ${productInfo.preco}</p>
                 <a href="#" class="buy-button" onclick="comprarProduto()">Comprar</a>
+                <a href="#" class="buy-button" onclick="irParaChat(${fornecedorInfo.id})">Conversar com vendedor</a>
             `;
         })
         .catch(error => console.error('Erro ao obter dados da API:', error));
 
         carregarAvaliacoesDaAPI()
 });
+
+function irParaChat(idFornecedor){
+    window.location.href = `http://localhost:8000/chat/${idFornecedor}`;
+}
 
 function exibirAvaliacoes(avaliacoes) {
     const reviewsList = document.getElementById('reviewsList');

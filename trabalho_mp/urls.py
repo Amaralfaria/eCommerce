@@ -19,7 +19,7 @@ from django.urls import path
 from app import views
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from rest_framework_simplejwt.views import TokenRefreshView, TokenObtainPairView, TokenVerifyView
-from app.views import index, criar_usuario, produto_especifico, login, criar_fornecedor, criar_produto,produtos_comprados, home
+from app.views import index, criar_usuario, produto_especifico, login, criar_fornecedor, criar_produto,produtos_comprados, home, chat
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -51,7 +51,7 @@ urlpatterns = [
     path('feira/', views.FeiraViewSet.as_view({"get":"get"})),
 
     #Mensagens
-    path('mensagens/<int:user1>/<int:user2>', views.MensagemViewSet.as_view({"get":"get_msg_cliente_fornecedor"})),
+    path('mensagens/<int:user2>', views.MensagemViewSet.as_view({"get":"get_msg_cliente_fornecedor"})),
     path('mensagens/', views.MensagemViewSet.as_view({"post":"post"})),
 
     #avaliacoes
@@ -84,4 +84,5 @@ urlpatterns = [
     path('criar_fornecedor/',criar_fornecedor, name='criar fornecedor'),
     path('criar_produto/',criar_produto, name='criar produto'),
     path('produtos_comprados/',produtos_comprados, name='criar produto'),
+    path('chat/<int:id>',chat, name='chat privado'),
 ]
