@@ -1,4 +1,5 @@
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
+from django.contrib.auth import logout as sair
 from .models import Produto
 from .serializers import *
 from rest_framework.response import Response
@@ -405,6 +406,12 @@ class UsuarioViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewset
         usuarios = Usuario.objects.all()
         serializer = UsuarioSerializer(usuarios, many=True)
         return JsonResponse({"Usuarios": serializer.data})
+    
+
+    def logout_user(self,request):
+        sair(request)
+
+        return HttpResponse("User reset successful")
     
     '''
     /***************************************************************************
@@ -893,8 +900,8 @@ class MensagemViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewse
         for mm in m:
             print(mm.__dict__)
 
-        for mensagem in mensagens:
-            print(mensagem.__dict__)
+        # for mensagem in mensagens:
+        #     print(mensagem.__dict__)
 
         # for msg in mensagens:
         #     print(msg.__dict__)
@@ -904,6 +911,20 @@ class MensagemViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewse
         
 
         return JsonResponse({"mensagens": serializer.data})
+    
+    def get_diferentes_usuarios_chat(self,request):
+        remetentes = Mensagem.objects.filter(~Q(remetente_id=request.user.id) & Q(destinatario_id=request.user.id)).values('remetente_id','remetente__username').distinct()
+        
+        
+        # serializer = MensagemSerializer(remetentes,many=True)
+        lista = []
+        for usuario in remetentes:
+            lista.append(usuario)
+
+        data = {"usuarios": lista}
+
+
+        return JsonResponse(data)
     
     '''
     /***************************************************************************
@@ -1180,6 +1201,9 @@ def criar_produto(request):
 
 def produtos_comprados(request):
     return render(request,'produtos_comprados.html')
+
+def conversas_fornecedores(request):
+    return render(request,'conversas_fornecedor.html')
 
 
 
