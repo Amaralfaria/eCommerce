@@ -1,4 +1,8 @@
 <!DOCTYPE html>
+<script type="text/javascript">
+    var homeUrl = "{% url 'index' %}";
+    console.log("Home URL:", homeUrl); // Isso ajudará a verificar se a URL está correta
+</script>
 <html lang="pt">
 <head>
     <meta charset="UTF-8">
@@ -32,15 +36,21 @@
             color: #333;
         }
     </style>
+
     {% load static %}
     <script src="{% static 'js/script.js' %}"></script>
-    <link rel="stylesheet" href="static/css/style.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <script type="text/javascript">
+        var homeUrl = "{% url 'index' %}";
+        console.log("Home URL:", homeUrl);
+</script>
 </head>
 <body>
     <header>
         <h1>Marketplace</h1>
         <nav>
-            <a href="login.html">Login/Cadastro</a>
+            <a href="{% url 'login' %}">Login</a>
         </nav>
         <div>
             <input type="text" id="barra-pesquisa" placeholder="Pesquisar produtos...">

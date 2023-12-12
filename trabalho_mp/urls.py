@@ -19,7 +19,7 @@ from django.urls import path
 from app import views
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from rest_framework_simplejwt.views import TokenRefreshView, TokenObtainPairView, TokenVerifyView
-from app.views import index, criar_usuario, produto_especifico, login, criar_fornecedor, criar_produto,produtos_comprados, home, chat
+from app.views import index, criar_usuario, produto_especifico, login_view, criar_fornecedor, criar_produto,produtos_comprados, home, chat
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -78,9 +78,9 @@ urlpatterns = [
     #templates
     path('', index, name='index'),
     path('home/', home, name='home'),
-    path('criar_usuario/', criar_usuario,name='criacao de usuario'),
+    path('criar_usuario/', criar_usuario,name='cadastro'),
     path('visualizar_produto/<int:id>',produto_especifico, name='visualização de produto unico'),
-    path('login/',login, name='login usuario'),
+    path('login/', login_view, name='login'),
     path('criar_fornecedor/',criar_fornecedor, name='criar fornecedor'),
     path('criar_produto/',criar_produto, name='criar produto'),
     path('produtos_comprados/',produtos_comprados, name='criar produto'),

@@ -32,7 +32,7 @@
             color: #333;
         }
     </style>
-    {% load static %}
+    <!-- {% load static %} -->
     <script src="{% static 'js/home.js' %}"></script>
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
 </head>
@@ -40,7 +40,7 @@
     <header>
         <h1>Marketplace</h1>
         <nav>
-            <a href="login.html">Login/Cadastro</a>
+            <a href="app/templates/login.html">Login</a>
         </nav>
         <div>
             <input type="text" id="barra-pesquisa" placeholder="Pesquisar produtos...">

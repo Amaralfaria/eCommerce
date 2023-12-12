@@ -1,12 +1,9 @@
 function login() {
-    // Obtenha os valores do usuário e senha
     var username = document.getElementById("username").value;
     var password = document.getElementById("password").value;
+    const homeUrl = '/'; // URL da página inicial
 
-    console.log(username)
-    console.log(password)
 
-    // Dados a serem enviados no corpo da solicitação
     var dados = {
         "username": username,
         "password": password
@@ -21,21 +18,22 @@ function login() {
         body: JSON.stringify(dados)
     })
     .then(response => {
-        if (response.status != 200) {
-            alert('Usuario não encontrado!');
-            throw new Error('Erro na login: ' + response.status);
+        if (response.status === 200) {
+            return response.json();
+        } else {
+            response.json().then(data => {
+                alert(data.detail || 'Erro ao fazer login. Verifique suas credenciais.');
+            });
+            throw new Error('Erro na autenticação: ' + response.status);
         }
-        return response.json();
     })
     .then(data => {
-        // Lógica de sucesso - manipule a resposta da API conforme necessário
-        localStorage.setItem("access_token",data.access)
-        localStorage.setItem("refresh_token",data.refresh)
-        alert('Login bem-sucedido!'); // Adapte conforme necessário
+        localStorage.setItem("access_token", data.access);
+        localStorage.setItem("refresh_token", data.refresh);
+        alert('Login bem-sucedido!');
+        window.location.href = homeUrl; // Redirecionamento para a página inicial
     })
     .catch(error => {
-        // Lógica de erro - manipule os erros da API
         console.error('Erro na autenticação:', error);
-        alert('Erro ao fazer login. Verifique suas credenciais.');
     });
 }

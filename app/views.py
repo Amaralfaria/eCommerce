@@ -427,10 +427,11 @@ class UsuarioViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewset
     def post(self, request):
         serializer = UsuarioSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            user = serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
-            print(serializer.errors)
+            print("Errores de Serialização:", serializer.errors)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     '''
     /***************************************************************************
@@ -1159,11 +1160,10 @@ def chat(request, id):
     }
     return render(request,'chat.html',context)
 
-
 def criar_usuario(request):
     return render(request, 'criarUsuario.html')
 
-def login(request):
+def login_view(request):
     return render(request,'login.html')
 
 def produto_especifico(request, id):

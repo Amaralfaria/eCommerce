@@ -14,6 +14,7 @@ class FeiraSerializer(serializers.ModelSerializer):
         read_only_fields = ['id']
 
 class UsuarioSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
     class Meta:
         model = Usuario
         fields = ['id','username', 'email', 'password',
@@ -22,7 +23,15 @@ class UsuarioSerializer(serializers.ModelSerializer):
 
 
     def create(self, validated_data):
-        user = Usuario.objects.create_user(**validated_data)
+        user = Usuario.objects.create(
+            username=validated_data['username'],
+            email=validated_data['email'],
+            telefone=validated_data['telefone'],
+            is_cliente=validated_data['is_cliente'],
+            is_fornecedor=validated_data['is_fornecedor'],
+        )
+        user.set_password(validated_data['password'])
+        user.save()
         return user
 
 class ClienteSerializer(serializers.ModelSerializer):
