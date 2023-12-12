@@ -29,18 +29,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 function obterProdutos() {
-    // latitude = localStorage.getItem()
-    // // Substitua pela lógica de chamada da API para obter produtos
 
-    // url = 'http://localhost:8000/produtos/?'
+    url = 'http://localhost:8000/produtos/'
 
-    // url += localStorage.getItem("latitude");
-    // url += '&'
-    // url +=
-
+    url += `?latitudeCliente=${localStorage.getItem("latitude")}&longitudeCliente=${localStorage.getItem("longitude")}`;
+    
     
 
-    fetch('http://localhost:8000/produtos/?latitudeCliente=50.1&longitudeCliente=50.1')
+    fetch(url)
         .then(response => response.json())
         .then(produtos => {
             // Chama a função para exibir os produtos
