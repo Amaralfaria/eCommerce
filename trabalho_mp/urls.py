@@ -19,7 +19,7 @@ from django.urls import path
 from app import views
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from rest_framework_simplejwt.views import TokenRefreshView, TokenObtainPairView, TokenVerifyView
-from app.views import index, criar_usuario, produto_especifico, login_view, criar_fornecedor, criar_produto,produtos_comprados, home, chat
+from app.views import index, criar_usuario, produto_especifico, login_view, criar_fornecedor, criar_produto,produtos_comprados, home, chat, conversas_fornecedores
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -42,6 +42,8 @@ urlpatterns = [
     #usuarios
     path("usuarios/", views.UsuarioViewSet.as_view({"get":"get","post":"post"}), name="usuarios"),
     path('usuarios/<int:id>', views.UsuarioViewSet.as_view({"get":"get_specific","put":"put","delete":"delete"})),
+    path('logout/', views.UsuarioViewSet.as_view({"get":"logout_user"})),
+    path('usuario/tipo/', views.UsuarioViewSet.as_view({"post":"tipo_usuario"})),
 
     #fornecedores
     path('fornecedores/', views.FornecedorViewSet.as_view({"get":"get","post":"post"})),
@@ -53,6 +55,7 @@ urlpatterns = [
     #Mensagens
     path('mensagens/<int:user2>', views.MensagemViewSet.as_view({"get":"get_msg_cliente_fornecedor"})),
     path('mensagens/', views.MensagemViewSet.as_view({"post":"post"})),
+    path('mensagens_fornecedor/', views.MensagemViewSet.as_view({"get":"get_diferentes_usuarios_chat"})),
 
     #avaliacoes
     path('avaliacoes_produto/<int:id>', views.AvaliacaoViewSet.as_view({"get":"get"})),
@@ -85,4 +88,5 @@ urlpatterns = [
     path('criar_produto/',criar_produto, name='criar produto'),
     path('produtos_comprados/',produtos_comprados, name='criar produto'),
     path('chat/<int:id>',chat, name='chat privado'),
+    path('conversas/',conversas_fornecedores, name='conversas de um fornecedor'),
 ]

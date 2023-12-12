@@ -4,5 +4,4 @@ start:
 test:
 	python -m pytest --cov=app --cov-report html
 
-
 .PHONY: start

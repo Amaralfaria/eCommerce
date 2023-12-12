@@ -29,8 +29,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 function obterProdutos() {
-    // Substitua pela lógica de chamada da API para obter produtos
-    fetch('http://localhost:8000/produtos/')
+
+    url = 'http://localhost:8000/produtos/'
+
+    url += `?latitudeCliente=${localStorage.getItem("latitude")}&longitudeCliente=${localStorage.getItem("longitude")}`;
+    
+    
+
+    fetch(url)
         .then(response => response.json())
         .then(produtos => {
             // Chama a função para exibir os produtos
@@ -51,7 +57,10 @@ function exibirProdutos(produtos) {
         productCard.classList.add('product-card');
 
         var productName = document.createElement('h2');
+        var distanciaProduto = document.createElement('p')
         productName.textContent = produto.nome; // Substitua pelo campo correto
+        distanciaProduto.textContent = produto.distancia
+
 
 
         // Adicione a imagem do produto, se aplicável
@@ -63,6 +72,7 @@ function exibirProdutos(produtos) {
         }
 
         productCard.appendChild(productName);
+        productCard.appendChild(distanciaProduto);
         productContainer.appendChild(productCard);
     });
 }

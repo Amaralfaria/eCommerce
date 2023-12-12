@@ -1,4 +1,5 @@
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
+from django.contrib.auth import logout as sair
 from .models import Produto
 from .serializers import *
 from rest_framework.response import Response
@@ -51,8 +52,7 @@ class ProdutoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewset
         latitudeCliente = request.query_params.get('latitudeCliente',None)
         longitudeCliente = request.query_params.get('longitudeCliente',None)
 
-        if raio and latitudeCliente and longitudeCliente:
-            raio = float(raio)
+        if latitudeCliente and longitudeCliente:
             latitudeCliente = float(latitudeCliente)
             longitudeCliente = float(longitudeCliente)
 
@@ -64,7 +64,13 @@ class ProdutoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewset
                     ) * 6371,  # Raio da Terra em quilômetros
                     output_field=fields.FloatField()
                 )
-            ).filter(distancia__lte=raio)
+            )
+
+            if raio:
+                raio = float(raio)
+                produtos = produtos.filter(distancia__lte=raio)
+
+        
 
         if feira:
             produtos = produtos.filter(Q(fornecedor__feira=int(feira)))
@@ -405,6 +411,29 @@ class UsuarioViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewset
         usuarios = Usuario.objects.all()
         serializer = UsuarioSerializer(usuarios, many=True)
         return JsonResponse({"Usuarios": serializer.data})
+    
+
+    def logout_user(self,request):
+        sair(request)
+
+        return HttpResponse("User reset successful")
+    
+    def tipo_usuario(self, request):
+        if not request.user.is_authenticated:
+            print('anonimo')
+            return JsonResponse({"tipo":'anonimo'})
+        
+        if request.user.is_cliente:
+            print('cliente')
+            return JsonResponse({"tipo":"cliente"})
+        
+        if request.user.is_fornecedor:
+            print('fornecedor')
+            return JsonResponse({"tipo":"fornecedor"})
+            
+
+
+
     
     '''
     /***************************************************************************
@@ -893,8 +922,8 @@ class MensagemViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewse
         for mm in m:
             print(mm.__dict__)
 
-        for mensagem in mensagens:
-            print(mensagem.__dict__)
+        # for mensagem in mensagens:
+        #     print(mensagem.__dict__)
 
         # for msg in mensagens:
         #     print(msg.__dict__)
@@ -904,6 +933,20 @@ class MensagemViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewse
         
 
         return JsonResponse({"mensagens": serializer.data})
+    
+    def get_diferentes_usuarios_chat(self,request):
+        remetentes = Mensagem.objects.filter(~Q(remetente_id=request.user.id) & Q(destinatario_id=request.user.id)).values('remetente_id','remetente__username').distinct()
+        
+        
+        # serializer = MensagemSerializer(remetentes,many=True)
+        lista = []
+        for usuario in remetentes:
+            lista.append(usuario)
+
+        data = {"usuarios": lista}
+
+
+        return JsonResponse(data)
     
     '''
     /***************************************************************************
@@ -1180,6 +1223,9 @@ def criar_produto(request):
 
 def produtos_comprados(request):
     return render(request,'produtos_comprados.html')
+
+def conversas_fornecedores(request):
+    return render(request,'conversas_fornecedor.html')
 
 
 

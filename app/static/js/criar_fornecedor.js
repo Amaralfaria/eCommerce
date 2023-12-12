@@ -36,6 +36,8 @@ function criarFornecedor() {
     })
     .then(data => {
         console.log('Resposta da API:', data);
+        console.log('oi')
+        window.location.href = 'http://localhost:8000/home/'
         alert('Fornecedor criado com sucesso!');
     })
     .catch(error => {

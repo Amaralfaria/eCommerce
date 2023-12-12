@@ -31,7 +31,7 @@ function login() {
         localStorage.setItem("access_token", data.access);
         localStorage.setItem("refresh_token", data.refresh);
         alert('Login bem-sucedido!');
-        window.location.href = homeUrl; // Redirecionamento para a página inicial
+        window.location.href = 'http://localhost:8000/home/'; // Redirecionamento para a página inicial
     })
     .catch(error => {
         console.error('Erro na autenticação:', error);

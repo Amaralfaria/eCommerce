@@ -1,11 +1,19 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Criação de Usuário</title>
-    <style>
-        body {
+<!-- exemplo.html -->
+{% extends 'base.html' %}
+
+{% block title %}Home - {{ block.super }}{% endblock %}
+
+{% block scripts %}
+    <!-- Link para seu script JavaScript específico para esta página -->
+    
+    {% load static %}
+    <script src="{% static 'js/cadastrar_usuario.js' %}"></script>
+{% endblock %}
+
+{% block stylesheets %}
+
+<style>
+    body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
             margin: 0;
@@ -58,11 +66,12 @@
             background-color: #45a049;
         }
     </style>
-    {% load static %}
-    <script src="{% static 'js/cadastrar_usuario.js' %}"></script>
-</head>
-<body>
-    <form>
+</style>
+{% endblock %}
+
+
+{% block content %}
+<form>
         <h2>Criar Usuário</h2>
 
         <label for="Username">Nome:</label>
@@ -83,6 +92,4 @@
 
         <button type="button" onclick="cadastrarUsuario()">Criar Conta</button>
     </form>
-
-</body>
-</html>
+{% endblock %}

@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 <p class="supplier">Fornecedor: ${fornecedorInfo.nome_do_negocio}</p>
                 <p class="price">Preço: R$ ${productInfo.preco}</p>
                 <a href="#" class="buy-button" onclick="comprarProduto()">Comprar</a>
-                <a href="#" class="buy-button" onclick="irParaChat(${fornecedorInfo.id})">Conversar com vendedor</a>
+                <a href="#" class="buy-button" onclick="irParaChat(${fornecedorInfo.fornecedor_user})">Conversar com vendedor</a>
             `;
         })
         .catch(error => console.error('Erro ao obter dados da API:', error));
@@ -183,7 +183,7 @@ function comprarProduto(){
     })
         .then(response => {
             if (response.status === 201) {
-                window.location.reload()
+                window.location.href = 'http://localhost:8000/produtos_comprados/'
             } else {
                 throw new Error('Erro na requisição: ' + response.status);
             }
