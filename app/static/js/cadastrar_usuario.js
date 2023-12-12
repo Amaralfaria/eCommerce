@@ -26,25 +26,21 @@ function cadastrarUsuario(){
     })
         .then(response => {
             if (response.status === 201) {
-                if(!is_fornecedor){
-                    const urlToken = 'http://localhost:8000/token/'
+                const urlToken = 'http://localhost:8000/token/'
 
-                    var credencials = {
-                        "username": username,
-                        "password": password,
-                    }
-
-                    return fetch(urlToken,{
-                        method: "POST",
-                        headers:{
-                            "Content-Type": "application/json",
-                            "accept": "application/json"
-                        },
-                        body: JSON.stringify(credencials)
-                    })
-                }else{
-                    window.location.href = 'http://localhost:8000/home/';
+                var credencials = {
+                    "username": username,
+                    "password": password,
                 }
+
+                return fetch(urlToken,{
+                    method: "POST",
+                    headers:{
+                        "Content-Type": "application/json",
+                        "accept": "application/json"
+                    },
+                    body: JSON.stringify(credencials)
+                })
             } else {
                 throw new Error('Erro na requisição: ' + response.status);
             }
@@ -54,21 +50,26 @@ function cadastrarUsuario(){
             localStorage.setItem("access_token",token.access);
             localStorage.setItem("refresh_token",token.refresh);
 
-            const urlClient = 'http://localhost:8000/cliente/'
-            
-            novo_cliente = {
-                "preferencias_de_busca": null
+            if(!is_fornecedor){
+                const urlClient = 'http://localhost:8000/cliente/'
+                
+                novo_cliente = {
+                    "preferencias_de_busca": null
+                }
+    
+                return fetch(urlClient,{
+                    method: "POST",
+                    headers:{
+                        "Content-Type": "application/json",
+                        "accept": "application/json",
+                        'Authorization': `Bearer ${token.access}`,
+                    },
+                    body : JSON.stringify(novo_cliente)
+                })
+            }else{
+                window.location.href = 'http://localhost:8000/criar_fornecedor/'
             }
 
-            return fetch(urlClient,{
-                method: "POST",
-                headers:{
-                    "Content-Type": "application/json",
-                    "accept": "application/json",
-                    'Authorization': `Bearer ${token.access}`,
-                },
-                body : JSON.stringify(novo_cliente)
-            })
 
         })
         .then(response => {
