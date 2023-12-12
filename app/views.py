@@ -52,8 +52,7 @@ class ProdutoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewset
         latitudeCliente = request.query_params.get('latitudeCliente',None)
         longitudeCliente = request.query_params.get('longitudeCliente',None)
 
-        if raio and latitudeCliente and longitudeCliente:
-            raio = float(raio)
+        if latitudeCliente and longitudeCliente:
             latitudeCliente = float(latitudeCliente)
             longitudeCliente = float(longitudeCliente)
 
@@ -65,7 +64,13 @@ class ProdutoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewset
                     ) * 6371,  # Raio da Terra em quilômetros
                     output_field=fields.FloatField()
                 )
-            ).filter(distancia__lte=raio)
+            )
+
+            if raio:
+                raio = float(raio)
+                produtos = produtos.filter(distancia__lte=raio)
+
+        
 
         if feira:
             produtos = produtos.filter(Q(fornecedor__feira=int(feira)))
@@ -412,6 +417,23 @@ class UsuarioViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewset
         sair(request)
 
         return HttpResponse("User reset successful")
+    
+    def tipo_usuario(self, request):
+        if not request.user.is_authenticated:
+            print('anonimo')
+            return JsonResponse({"tipo":'anonimo'})
+        
+        if request.user.is_cliente:
+            print('cliente')
+            return JsonResponse({"tipo":"cliente"})
+        
+        if request.user.is_fornecedor:
+            print('fornecedor')
+            return JsonResponse({"tipo":"fornecedor"})
+            
+
+
+
     
     '''
     /***************************************************************************

@@ -1,79 +1,85 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            padding: 20px;
-            background-color: #f4f4f4;
-        }
+<!-- exemplo.html -->
+{% extends 'base.html' %}
 
-        #chat-container {
-            max-width: 600px;
-            margin: auto;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
+{% block title %}Home - {{ block.super }}{% endblock %}
 
-        #messages-container {
-            max-height: 300px;
-            overflow-y: scroll;
-            border-bottom: 1px solid #ddd;
-            margin-bottom: 10px;
-        }
-
-        .message {
-            margin-bottom: 10px;
-            padding: 10px;
-            border-radius: 5px;
-        }
-
-        .incoming {
-            background-color: #e5f7ff;
-        }
-
-        .outgoing {
-            background-color: #a6e3a6;
-            text-align: right;
-        }
-
-        #input-container {
-            display: flex;
-            justify-content: space-between;
-        }
-
-        #message-input {
-            flex-grow: 1;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            margin-right: 10px;
-        }
-
-        #send-button {
-            padding: 10px;
-            background-color: #4caf50;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        #send-button:hover {
-            background-color: #45a049;
-        }
-    </style>
-    <title>Chat</title>
+{% block scripts %}
+    <!-- Link para seu script JavaScript específico para esta página -->
     {% load static %}
     <script src="{% static 'js/chat.js' %}"></script>
-</head>
-<body>
-    <span hidden id="id_fornecedor">{{id}}</span>
+{% endblock %}
+
+{% block stylesheets %}
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        padding: 20px;
+        background-color: #f4f4f4;
+    }
+
+    #chat-container {
+        max-width: 600px;
+        margin: auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    #messages-container {
+        max-height: 300px;
+        overflow-y: scroll;
+        border-bottom: 1px solid #ddd;
+        margin-bottom: 10px;
+    }
+
+    .message {
+        margin-bottom: 10px;
+        padding: 10px;
+        border-radius: 5px;
+    }
+
+    .incoming {
+        background-color: #e5f7ff;
+    }
+
+    .outgoing {
+        background-color: #a6e3a6;
+        text-align: right;
+    }
+
+    #input-container {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    #message-input {
+        flex-grow: 1;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        margin-right: 10px;
+    }
+
+    #send-button {
+        padding: 10px;
+        background-color: #4caf50;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    #send-button:hover {
+        background-color: #45a049;
+    }
+</style>
+{% endblock %}
+
+
+{% block content %}
+<span hidden id="id_fornecedor">{{id}}</span>
     <div id="chat-container">
         <div id="messages-container"></div>
         <div id="input-container">
@@ -81,5 +87,4 @@
             <button id="send-button">Enviar</button>
         </div>
     </div>
-</body>
-</html>
+{% endblock %}

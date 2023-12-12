@@ -1,9 +1,15 @@
-<!DOCTYPE html>
-<html lang="pt">
-<head>
-    <meta charset="UTF-8">
-    <title>Marketplace</title>
+<!-- exemplo.html -->
+{% extends 'base.html' %}
 
+{% block title %}Home - {{ block.super }}{% endblock %}
+
+{% block scripts %}
+    <!-- Link para seu script JavaScript específico para esta página -->
+    {% load static %}
+    <script src="{% static 'js/home.js' %}"></script>
+{% endblock %}
+
+{% block stylesheets %}
     <style>
         .product-container {
             display: flex;
@@ -32,11 +38,12 @@
             color: #333;
         }
     </style>
-    <!-- {% load static %} -->
-    <script src="{% static 'js/home.js' %}"></script>
+    <!-- Link para sua folha de estilo específica para esta página -->
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
-</head>
-<body>
+{% endblock %}
+
+
+{% block content %}
     <header>
         <h1>Marketplace</h1>
         <nav>
@@ -52,5 +59,4 @@
         <!-- Os produtos serão preenchidos dinamicamente via JavaScript -->
         </div>
     </main>
-</body>
-</html>
+{% endblock %}

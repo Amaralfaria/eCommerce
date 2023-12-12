@@ -1,8 +1,16 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- exemplo.html -->
+{% extends 'base.html' %}
+
+{% block title %}Home - {{ block.super }}{% endblock %}
+
+{% block scripts %}
+    <!-- Link para seu script JavaScript específico para esta página -->
+    {% load static %}
+    <script src="{% static 'js/conversas_fornecedor.js' %}"></script>
+{% endblock %}
+
+{% block stylesheets %}
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -53,13 +61,11 @@
             color: #666;
         }
     </style>
-    <title>Conversas</title>
-    {% load static %}
-    <script src="{% static 'js/conversas_fornecedor.js' %}"></script>
-</head>
-<body>
-    <div class="conversations-container" id="conversationsContainer">
-        <!-- As conversas serão preenchidas dinamicamente via JavaScript -->
-    </div>
-</body>
-</html>
+{% endblock %}
+
+
+{% block content %}
+<div class="conversations-container" id="conversationsContainer">
+    <!-- As conversas serão preenchidas dinamicamente via JavaScript -->
+</div>
+{% endblock %}

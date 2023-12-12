@@ -183,7 +183,7 @@ function comprarProduto(){
     })
         .then(response => {
             if (response.status === 201) {
-                window.location.reload()
+                window.location.href = 'http://localhost:8000/produtos_comprados/'
             } else {
                 throw new Error('Erro na requisição: ' + response.status);
             }

@@ -1,0 +1,27 @@
+<!-- base.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Seu Site{% endblock %}</title>
+    
+    <!-- Adicione links para folhas de estilo aqui -->
+    {% block stylesheets %}
+    {% endblock %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <script src="{% static 'js/base.js' %}"></script>
+    
+    <!-- Adicione scripts JavaScript aqui -->
+    {% block scripts %}{% endblock %}
+</head>
+<body>
+    <div id="menu" class="menu">
+        
+    </div>
+    <div class="content">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

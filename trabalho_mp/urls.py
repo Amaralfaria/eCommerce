@@ -43,6 +43,7 @@ urlpatterns = [
     path("usuarios/", views.UsuarioViewSet.as_view({"get":"get","post":"post"}), name="usuarios"),
     path('usuarios/<int:id>', views.UsuarioViewSet.as_view({"get":"get_specific","put":"put","delete":"delete"})),
     path('logout/', views.UsuarioViewSet.as_view({"get":"logout_user"})),
+    path('usuario/tipo/', views.UsuarioViewSet.as_view({"post":"tipo_usuario"})),
 
     #fornecedores
     path('fornecedores/', views.FornecedorViewSet.as_view({"get":"get","post":"post"})),

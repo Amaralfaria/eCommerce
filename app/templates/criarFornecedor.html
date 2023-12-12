@@ -1,96 +1,104 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            padding: 20px;
-            background-color: #f4f4f4;
-        }
+<!-- exemplo.html -->
+{% extends 'base.html' %}
 
-        .form-container {
-            max-width: 600px;
-            margin: auto;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
+{% block title %}Home - {{ block.super }}{% endblock %}
 
-        h1 {
-            color: #333;
-            text-align: center;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: 16px;
-            color: #555;
-            margin-bottom: 5px;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 10px;
-            font-size: 14px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-
-        .form-group button {
-            background-color: #3498db;
-            color: #fff;
-            padding: 10px;
-            border: none;
-            border-radius: 4px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        .form-group button:hover {
-            background-color: #2185d0;
-        }
-    </style>
-    <title>Cadastro de Vendedor</title>
+{% block scripts %}
+    <!-- Link para seu script JavaScript específico para esta página -->
+    
     {% load static %}
     <script src="{% static 'js/criar_fornecedor.js' %}"></script>
-</head>
-<body>
-    <div class="form-container">
-        <h1>Criar Vendedor</h1>
-        <form id="formFornecedor">
-            <div class="form-group">
-                <label for="nome_negocio">Nome do Negócio:</label>
-                <input type="text" id="nome_negocio" placeholder="Digite o nome do negócio" required>
-            </div>
-            <div class="form-group">
-                <label for="endereco">Endereço:</label>
-                <input type="text" id="endereco" placeholder="Digite o endereço" required>
-            </div>
-            <div class="form-group">
-                <label for="latitude">Latitude:</label>
-                <input type="number" id="latitude" placeholder="Digite a latitude" step="any" required>
-            </div>
-            <div class="form-group">
-                <label for="longitude">Longitude:</label>
-                <input type="number" id="longitude" placeholder="Digite a longitude" step="any" required>
-            </div>
-            <div class="form-group">
-                <label for="feira">Feira:</label>
-                <select id="feira" required>
-                    <!-- Options serão preenchidos dinamicamente via JavaScript -->
-                </select>
-            </div>
-            <div class="form-group">
-                <button type="button" onclick="criarFornecedor()">Criar Fornecedor</button>
-            </div>
-        </form>
-    </div>
-</html>
+{% endblock %}
+
+{% block stylesheets %}
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        padding: 20px;
+        background-color: #f4f4f4;
+    }
+
+    .form-container {
+        max-width: 600px;
+        margin: auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+        color: #333;
+        text-align: center;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        font-size: 16px;
+        color: #555;
+        margin-bottom: 5px;
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 10px;
+        font-size: 14px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    .form-group button {
+        background-color: #3498db;
+        color: #fff;
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    .form-group button:hover {
+        background-color: #2185d0;
+    }
+</style>
+{% endblock %}
+
+
+{% block content %}
+<div class="form-container">
+    <h1>Criar Vendedor</h1>
+    <form id="formFornecedor">
+        <div class="form-group">
+            <label for="nome_negocio">Nome do Negócio:</label>
+            <input type="text" id="nome_negocio" placeholder="Digite o nome do negócio" required>
+        </div>
+        <div class="form-group">
+            <label for="endereco">Endereço:</label>
+            <input type="text" id="endereco" placeholder="Digite o endereço" required>
+        </div>
+        <div class="form-group">
+            <label for="latitude">Latitude:</label>
+            <input type="number" id="latitude" placeholder="Digite a latitude" step="any" required>
+        </div>
+        <div class="form-group">
+            <label for="longitude">Longitude:</label>
+            <input type="number" id="longitude" placeholder="Digite a longitude" step="any" required>
+        </div>
+        <div class="form-group">
+            <label for="feira">Feira:</label>
+            <select id="feira" required>
+                <!-- Options serão preenchidos dinamicamente via JavaScript -->
+            </select>
+        </div>
+        <div class="form-group">
+            <button type="button" onclick="criarFornecedor()">Criar Fornecedor</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
