@@ -6,3 +6,5 @@ django-cors-headers
 coverage
 pytest-factoryboy
 pytest
+pylint
+pytest-cov
