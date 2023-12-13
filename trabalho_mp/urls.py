@@ -19,7 +19,7 @@ from django.urls import path
 from app import views
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from rest_framework_simplejwt.views import TokenRefreshView, TokenObtainPairView, TokenVerifyView
-from app.views import index, criar_usuario, produto_especifico, login_view, criar_fornecedor, criar_produto,produtos_comprados, home, chat, conversas_fornecedores
+from app.views_paginas import index, criar_usuario, produto_especifico, login_view, criar_fornecedor, criar_produto,produtos_comprados, home, chat, conversas_fornecedores
 
 urlpatterns = [
     path('admin/', admin.site.urls),

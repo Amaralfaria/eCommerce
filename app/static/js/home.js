@@ -33,6 +33,34 @@ function obterProdutos() {
     url = 'http://localhost:8000/produtos/'
 
     url += `?latitudeCliente=${localStorage.getItem("latitude")}&longitudeCliente=${localStorage.getItem("longitude")}`;
+
+    raio = document.getElementById('raio').value
+    fornecedor = document.getElementById('nome_fornecedor').value
+    produto = document.getElementById('barra-pesquisa').value
+    precoMaximo = document.getElementById('precoMaximo').value
+    precoMinimo = document.getElementById('precoMinimo').value
+
+
+    
+    if(raio){
+        url += `&raio=${raio}`;
+    }
+
+    if(produto){
+        url += `&nomeProduto=${produto}`;
+    }
+
+    if(fornecedor){
+        url += `&banca=${fornecedor}`;
+    }
+
+    if(precoMaximo){
+        url += `&precoMaximo=${precoMaximo}`;
+    }
+
+    if(precoMinimo){
+        url += `&precoMinimo=${precoMinimo}`;
+    }
     
     
 
@@ -50,6 +78,7 @@ function obterProdutos() {
 // Exibe os produtos na lista
 function exibirProdutos(produtos) {
     var productContainer = document.getElementById('productContainer');
+    productContainer.innerHTML = '';
 
     produtos.forEach(produto => {
         var productCard = document.createElement('a'); // Transforma o card em um link
@@ -58,8 +87,10 @@ function exibirProdutos(produtos) {
 
         var productName = document.createElement('h2');
         var distanciaProduto = document.createElement('p')
+        var preco = document.createElement('p')
         productName.textContent = produto.nome; // Substitua pelo campo correto
         distanciaProduto.textContent = produto.distancia
+        preco.textContent = produto.preco
 
 
 
@@ -73,6 +104,7 @@ function exibirProdutos(produtos) {
 
         productCard.appendChild(productName);
         productCard.appendChild(distanciaProduto);
+        productCard.appendChild(preco);
         productContainer.appendChild(productCard);
     });
 }

@@ -51,7 +51,11 @@
         </nav>
         <div>
             <input type="text" id="barra-pesquisa" placeholder="Pesquisar produtos...">
-            <button onclick="pesquisarProdutos()">Pesquisar</button>
+            <input type="text" id="nome_fornecedor" placeholder="pesquisar por fornecedor">
+            <input type="number" id="raio" placeholder="Distancia máxima">
+            <input type="number" id="precoMinimo" placeholder="Preço minimo">
+            <input type="number" id="precoMaximo" placeholder="Preço máximo">
+            <button onclick="obterProdutos()">Pesquisar</button>
         </div>
     </header>
     <main>
