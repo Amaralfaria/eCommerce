@@ -1,15 +1,17 @@
-import pytest
 import json
-from app.models import *
-from django.test import TestCase, Client
+
+import pytest
+from django.test import Client, TestCase
 from rest_framework.test import APIClient, APITestCase
+
+from app.models import *
 from app.tests.factories import *
 
 pytestmark = pytest.mark.django_db
 
-class TestUsuarioEndpoints:
-    endpoint = '/usuarios/'
 
+class TestUsuarioEndpoints:
+    endpoint = "/usuarios/"
 
     def test_usuario_get(self, usuario_factory, api_client):
         usuario_factory.create_batch(4)
@@ -17,49 +19,55 @@ class TestUsuarioEndpoints:
         response = api_client().get(self.endpoint)
 
         assert response.status_code == 200
-        assert len(json.loads(response.content)['Usuarios']) == 4
+        assert len(json.loads(response.content)["Usuarios"]) == 4
 
     def test_usuario_post(self, api_client):
         novo_cliente = {
-                    "username": "cliente",
-                    "email": "cliente@gmail.com",
-                    "password": "cliente",
-                    "telefone": "9999999",
-                    "is_cliente": True,
-                    "is_fornecedor": False
+            "username": "cliente",
+            "email": "cliente@gmail.com",
+            "password": "cliente",
+            "telefone": "9999999",
+            "is_cliente": True,
+            "is_fornecedor": False,
         }
-        
-        response = api_client().post(self.endpoint,data=json.dumps(novo_cliente), content_type='application/json')
-        obj_novo_cliente = Usuario.objects.get(pk=response.json()['id'])
+
+        response = api_client().post(
+            self.endpoint,
+            data=json.dumps(novo_cliente),
+            content_type="application/json",
+        )
+        obj_novo_cliente = Usuario.objects.get(pk=response.json()["id"])
 
         assert response.status_code == 201
-        assert obj_novo_cliente.username == 'cliente'
+        assert obj_novo_cliente.username == "cliente"
 
     def test_usuario_get_specific(self, api_client, usuario_factory):
         usuario_factory()
-        endpoint_id = self.endpoint + f'{1}'
+        endpoint_id = self.endpoint + f"{1}"
         obj_usuario = Usuario.objects.get(pk=1)
-        
+
         response = api_client().get(endpoint_id)
 
         assert response.status_code == 200
-        assert obj_usuario.id == response.json()['id']
+        assert obj_usuario.id == response.json()["id"]
 
     def test_usuario_put(self, api_client, usuario_factory):
         usuario_factory()
-        endpoint_id = self.endpoint + f'{1}'
-        update_usuario = {
-            "telefone": "77777777"
-        }
+        endpoint_id = self.endpoint + f"{1}"
+        update_usuario = {"telefone": "77777777"}
 
-        response = api_client().put(endpoint_id,data=json.dumps(update_usuario),content_type='application/json')
+        response = api_client().put(
+            endpoint_id,
+            data=json.dumps(update_usuario),
+            content_type="application/json",
+        )
 
         assert response.status_code == 200
-        assert Usuario.objects.get(pk=1).telefone == '77777777'
+        assert Usuario.objects.get(pk=1).telefone == "77777777"
 
     def test_usuario_delete(self, api_client, usuario_factory):
         usuario_factory()
-        endpoint_id = self.endpoint + f'{1}'
+        endpoint_id = self.endpoint + f"{1}"
 
         response = api_client().delete(endpoint_id)
 
@@ -71,74 +79,69 @@ class TestUsuarioEndpoints:
         assert response.status_code == 204
         assert usuario == None
 
-        
-
 
 class TestClienteEndpoints(APITestCase):
     def setUp(self):
-        self.endpoint = '/cliente/'
+        self.endpoint = "/cliente/"
         self.cliente_factory = ClienteFactory
         self.client = Client()
         self.api_client = APIClient
         self.usuario_factory = UsuarioFactory
-
-        
-
 
     # cliente_factory = ClienteFactory()  # Substitua pelo seu código de criação de cliente
     # api_client = APIClient()
 
     def test_usuario_get(self):
         self.cliente_factory.create_batch(4)
-        Usuario.objects.update(is_cliente=True,is_fornecedor=False)
+        Usuario.objects.update(is_cliente=True, is_fornecedor=False)
 
         response = self.api_client().get(self.endpoint)
-            
 
         assert response.status_code == 200
-        assert len(json.loads(response.content)['usuarios']) == 4
+        assert len(json.loads(response.content)["usuarios"]) == 4
 
     def test_usuario_post(self):
         usuario = self.usuario_factory()
-        Usuario.objects.update(is_cliente=True,is_fornecedor=False)
-        usuario.set_password('password')
+        Usuario.objects.update(is_cliente=True, is_fornecedor=False)
+        usuario.set_password("password")
         usuario.save()
 
-        self.client.login(username=usuario.username,password='password')
+        self.client.login(username=usuario.username, password="password")
 
-        novo_cliente = {
-            "preferencias_de_busca": None
-        }
+        novo_cliente = {"preferencias_de_busca": None}
 
-        
-        response = self.client.post(self.endpoint,data=json.dumps(novo_cliente), content_type='application/json')
+        response = self.client.post(
+            self.endpoint,
+            data=json.dumps(novo_cliente),
+            content_type="application/json",
+        )
         # obj_novo_cliente = Usuario.objects.get(pk=response.json()['id'])
 
         assert response.status_code == 201
 
     def test_client_get_specific(self):
         cliente = self.cliente_factory()
-        endpoint_id = self.endpoint + f'{cliente.id}'
-        
+        endpoint_id = self.endpoint + f"{cliente.id}"
+
         response = self.client.get(endpoint_id)
 
         assert response.status_code == 200
-        assert cliente.id == response.json()['id']
+        assert cliente.id == response.json()["id"]
 
     def test_usuario_put(self):
         cliente = self.cliente_factory()
-        Usuario.objects.update(is_cliente=True,is_fornecedor=False)
-        cliente.cliente_user.set_password('password')
+        Usuario.objects.update(is_cliente=True, is_fornecedor=False)
+        cliente.cliente_user.set_password("password")
         cliente.cliente_user.save()
-        endpoint_id = self.endpoint + f'{cliente.id}'
-        update_cliente = {
-            "preferencias_de_busca": {
-                "p1":"tudo"
-            }
-        }
+        endpoint_id = self.endpoint + f"{cliente.id}"
+        update_cliente = {"preferencias_de_busca": {"p1": "tudo"}}
 
-        self.client.login(username=cliente.cliente_user.username,password='password')
-        response = self.client.put(endpoint_id,data=json.dumps(update_cliente),content_type='application/json')
+        self.client.login(username=cliente.cliente_user.username, password="password")
+        response = self.client.put(
+            endpoint_id,
+            data=json.dumps(update_cliente),
+            content_type="application/json",
+        )
 
         assert response.status_code == 200
         assert Cliente.objects.get(pk=cliente.id).preferencias_de_busca == {
@@ -147,12 +150,12 @@ class TestClienteEndpoints(APITestCase):
 
     def test_usuario_delete(self):
         cliente = self.cliente_factory()
-        Usuario.objects.update(is_cliente=True,is_fornecedor=False)
-        cliente.cliente_user.set_password('password')
+        Usuario.objects.update(is_cliente=True, is_fornecedor=False)
+        cliente.cliente_user.set_password("password")
         cliente.cliente_user.save()
-        endpoint_id = self.endpoint + f'{cliente.id}'
+        endpoint_id = self.endpoint + f"{cliente.id}"
 
-        self.client.login(username=cliente.cliente_user.username,password='password')
+        self.client.login(username=cliente.cliente_user.username, password="password")
         response = self.client.delete(endpoint_id)
 
         try:
@@ -164,11 +167,9 @@ class TestClienteEndpoints(APITestCase):
         assert cliente == None
 
 
-    
-
 class TestFornecedorEndpoints(APITestCase):
     def setUp(self):
-        self.endpoint = '/fornecedores/'
+        self.endpoint = "/fornecedores/"
         self.fornecedor_factory = ForncedorFactory
         self.client = APIClient()
         self.usuario_factory = UsuarioFactory
@@ -178,10 +179,10 @@ class TestFornecedorEndpoints(APITestCase):
         usuario = UsuarioFactory()
         fornecedor.fornecedor_user = usuario
         Usuario.objects.update(is_cliente=False, is_fornecedor=True)
-        usuario.set_password('password')
+        usuario.set_password("password")
         usuario.save()
 
-        self.client.login(username=usuario.username, password='password')
+        self.client.login(username=usuario.username, password="password")
 
         novo_fornecedor = {
             "nome_do_negocio": "biju teste",
@@ -191,10 +192,13 @@ class TestFornecedorEndpoints(APITestCase):
             "feira": FeiraFactory().id,
         }
 
-        response = self.client.post(self.endpoint, data=json.dumps(novo_fornecedor), content_type='application/json')
+        response = self.client.post(
+            self.endpoint,
+            data=json.dumps(novo_fornecedor),
+            content_type="application/json",
+        )
 
         assert response.status_code == 201
-
 
     def test_fornecedor_get(self):
         self.fornecedor_factory.create_batch(4)
@@ -203,42 +207,49 @@ class TestFornecedorEndpoints(APITestCase):
         response = self.client.get(self.endpoint)
 
         assert response.status_code == 200
-        assert len(json.loads(response.content)['fornecedores']) == 4
-
+        assert len(json.loads(response.content)["fornecedores"]) == 4
 
     def test_fornecedor_get_specific(self):
         fornecedor = self.fornecedor_factory()
-        endpoint_id = self.endpoint + f'{fornecedor.id}'
+        endpoint_id = self.endpoint + f"{fornecedor.id}"
 
         response = self.client.get(endpoint_id)
 
         assert response.status_code == 200
-        assert fornecedor.id == response.json()['id']
+        assert fornecedor.id == response.json()["id"]
 
     def test_fornecedor_put(self):
         fornecedor = self.fornecedor_factory()
         Usuario.objects.update(is_cliente=False, is_fornecedor=True)
-        fornecedor.fornecedor_user.set_password('password')
+        fornecedor.fornecedor_user.set_password("password")
         fornecedor.fornecedor_user.save()
-        endpoint_id = self.endpoint + f'{fornecedor.id}'
-        update_fornecedor = {
-            "nome_do_negocio": "bijuterias sp"
-        }
+        endpoint_id = self.endpoint + f"{fornecedor.id}"
+        update_fornecedor = {"nome_do_negocio": "bijuterias sp"}
 
-        self.client.login(username=fornecedor.fornecedor_user.username, password='password')
-        response = self.client.put(endpoint_id, data=json.dumps(update_fornecedor), content_type='application/json')
+        self.client.login(
+            username=fornecedor.fornecedor_user.username, password="password"
+        )
+        response = self.client.put(
+            endpoint_id,
+            data=json.dumps(update_fornecedor),
+            content_type="application/json",
+        )
 
         assert response.status_code == 200
-        assert Fornecedor.objects.get(pk=fornecedor.id).nome_do_negocio == "bijuterias sp"
+        assert (
+            Fornecedor.objects.get(pk=fornecedor.id).nome_do_negocio == "bijuterias sp"
+        )
 
     def test_fornecedor_delete(self):
         fornecedor = self.fornecedor_factory()
         Usuario.objects.update(is_cliente=False, is_fornecedor=True)
-        fornecedor.fornecedor_user.set_password('password')
+        fornecedor.fornecedor_user.set_password("password")
         fornecedor.fornecedor_user.save()
-        endpoint_id = self.endpoint + f'{fornecedor.id}'
+        endpoint_id = self.endpoint + f"{fornecedor.id}"
 
-        self.client.login(username=fornecedor.fornecedor_user.username, password='password')
+        self.client.login(
+            username=fornecedor.fornecedor_user.username, password="password"
+        )
         response = self.client.delete(endpoint_id)
 
         try:
@@ -249,9 +260,10 @@ class TestFornecedorEndpoints(APITestCase):
         assert response.status_code == 204
         assert fornecedor is None
 
+
 class TestProdutoEndpoints(APITestCase):
     def setUp(self):
-        self.endpoint = '/produtos/'
+        self.endpoint = "/produtos/"
         self.produto_factory = ProdutoFactory
         self.usuario_factory = UsuarioFactory
         self.client = APIClient()
@@ -260,10 +272,12 @@ class TestProdutoEndpoints(APITestCase):
         self.fornecedor = ForncedorFactory()
 
         Usuario.objects.update(is_cliente=False, is_fornecedor=True)
-        self.fornecedor.fornecedor_user.set_password('password')
+        self.fornecedor.fornecedor_user.set_password("password")
         self.fornecedor.fornecedor_user.save()
 
-        self.client.login(username=self.fornecedor.fornecedor_user.username, password='password')
+        self.client.login(
+            username=self.fornecedor.fornecedor_user.username, password="password"
+        )
 
     def test_produto_get(self):
         self.produto_factory.create_batch(4)
@@ -271,7 +285,7 @@ class TestProdutoEndpoints(APITestCase):
         response = self.client.get(self.endpoint)
 
         assert response.status_code == 200
-        assert len(json.loads(response.content)['produtos']) == 4
+        assert len(json.loads(response.content)["produtos"]) == 4
 
     def test_produto_post(self):
         novo_produto = {
@@ -280,28 +294,33 @@ class TestProdutoEndpoints(APITestCase):
             "preco": 50.0,
             "categoria": CategoriaFactory().id,
         }
-        
 
-        response = self.client.post(self.endpoint, data=json.dumps(novo_produto), content_type='application/json')
+        response = self.client.post(
+            self.endpoint,
+            data=json.dumps(novo_produto),
+            content_type="application/json",
+        )
 
         self.assertEqual(response.status_code, 201)
 
     def test_produto_put(self):
         produto = self.produto_factory()
-        endpoint_id = f'{self.endpoint}{produto.id}'
+        endpoint_id = f"{self.endpoint}{produto.id}"
 
-        update_produto = {
-            "preco": 1000.0
-        }
+        update_produto = {"preco": 1000.0}
 
-        response = self.client.put(endpoint_id, data=json.dumps(update_produto), content_type='application/json')
+        response = self.client.put(
+            endpoint_id,
+            data=json.dumps(update_produto),
+            content_type="application/json",
+        )
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(Produto.objects.get(pk=produto.id).preco, 1000)
 
     def test_produto_delete(self):
         produto = self.produto_factory()
-        endpoint_id = f'{self.endpoint}{produto.id}'
+        endpoint_id = f"{self.endpoint}{produto.id}"
 
         response = self.client.delete(endpoint_id)
 
@@ -311,12 +330,9 @@ class TestProdutoEndpoints(APITestCase):
         self.assertEqual(response.status_code, 204)
 
 
-
-
-
 class TestCompraEndpoints(APITestCase):
     def setUp(self):
-        self.endpoint = '/cliente/compras/'
+        self.endpoint = "/cliente/compras/"
         self.compra_factory = CompraFactory
         self.usuario_factory = UsuarioFactory
         self.client = APIClient()
@@ -324,10 +340,12 @@ class TestCompraEndpoints(APITestCase):
         # Crie um usuário para autenticação nos testes
         self.cliente = ClienteFactory()
         Usuario.objects.update(is_cliente=True, is_fornecedor=False)
-        self.cliente.cliente_user.set_password('password')
+        self.cliente.cliente_user.set_password("password")
         self.cliente.cliente_user.save()
 
-        self.client.login(username=self.cliente.cliente_user.username, password='password')
+        self.client.login(
+            username=self.cliente.cliente_user.username, password="password"
+        )
 
     def test_compra_get(self):
         self.compra_factory.create_batch(4, produtos=[ProdutoFactory()])
@@ -340,18 +358,14 @@ class TestCompraEndpoints(APITestCase):
 
         self.assertEqual(response.status_code, 200)
         assert response.status_code == 200
-        assert len(json.loads(response.content)['Compras']) == 4
-
+        assert len(json.loads(response.content)["Compras"]) == 4
 
     def test_compra_post(self):
-        novo_compra = {
-            "data_compra": "2023-12-10",
-            "produtos": [
-                ProdutoFactory().id
-            ]
-        }
+        novo_compra = {"data_compra": "2023-12-10", "produtos": [ProdutoFactory().id]}
 
-        response = self.client.post(self.endpoint, data=json.dumps(novo_compra), content_type='application/json')
+        response = self.client.post(
+            self.endpoint, data=json.dumps(novo_compra), content_type="application/json"
+        )
 
         self.assertEqual(response.status_code, 201)
 
@@ -370,7 +384,7 @@ class TestCompraEndpoints(APITestCase):
 
     def test_compra_delete(self):
         compra = self.compra_factory(produtos=[ProdutoFactory()])
-        endpoint_id = f'/cliente/compras/{compra.id}'
+        endpoint_id = f"/cliente/compras/{compra.id}"
 
         response = self.client.delete(endpoint_id)
 
@@ -382,7 +396,7 @@ class TestCompraEndpoints(APITestCase):
 
 class TestAvaliacaoEndpoints(APITestCase):
     def setUp(self):
-        self.endpoint = '/avaliacoes/'
+        self.endpoint = "/avaliacoes/"
         self.usuario_factory = UsuarioFactory
         self.avaliacao_factory = AvaliacaoFactory
         self.client = APIClient()
@@ -390,10 +404,12 @@ class TestAvaliacaoEndpoints(APITestCase):
         # Crie um usuário para autenticação nos testes
         self.cliente = ClienteFactory()
         Usuario.objects.update(is_cliente=True, is_fornecedor=False)
-        self.cliente.cliente_user.set_password('password')
+        self.cliente.cliente_user.set_password("password")
         self.cliente.cliente_user.save()
 
-        self.client.login(username=self.cliente.cliente_user.username, password='password')
+        self.client.login(
+            username=self.cliente.cliente_user.username, password="password"
+        )
 
     def test_avaliacao_get(self):
         self.avaliacao_factory.create_batch(4)
@@ -404,38 +420,43 @@ class TestAvaliacaoEndpoints(APITestCase):
         response = self.client.get(self.endpoint)
 
         assert response.status_code == 200
-        assert len(json.loads(response.content)['avaliacoes']) == 4
-
-    
-
+        assert len(json.loads(response.content)["avaliacoes"]) == 4
 
     def test_avaliacao_post(self):
         nova_avaliacao = {
             "produto": ProdutoFactory().id,
             "nota": 5,
-            "comentario": "bom"
+            "comentario": "bom",
         }
 
-        response = self.client.post(self.endpoint, data=json.dumps(nova_avaliacao), content_type='application/json')
+        response = self.client.post(
+            self.endpoint,
+            data=json.dumps(nova_avaliacao),
+            content_type="application/json",
+        )
 
         self.assertEqual(response.status_code, 201)
 
     def test_avaliacao_put(self):
         avaliacao = self.avaliacao_factory()
-        endpoint_id = f'/avaliacoes/{avaliacao.id}'
+        endpoint_id = f"/avaliacoes/{avaliacao.id}"
 
         update_avaliacao = {
             "nota": 4,
         }
 
-        response = self.client.put(endpoint_id, data=json.dumps(update_avaliacao), content_type='application/json')
+        response = self.client.put(
+            endpoint_id,
+            data=json.dumps(update_avaliacao),
+            content_type="application/json",
+        )
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(Avaliacao.objects.get(pk=avaliacao.id).nota, 4)
 
     def test_avaliacao_delete(self):
         avaliacao = self.avaliacao_factory()
-        endpoint_id = f'/avaliacoes/{avaliacao.id}'
+        endpoint_id = f"/avaliacoes/{avaliacao.id}"
 
         response = self.client.delete(endpoint_id)
 
@@ -445,21 +466,21 @@ class TestAvaliacaoEndpoints(APITestCase):
         self.assertEqual(response.status_code, 204)
 
 
-        
-
 class TestMensagemEndpoints(APITestCase):
     def setUp(self):
-        self.endpoint = '/mensagens/'
+        self.endpoint = "/mensagens/"
         self.mensagem_factory = MensagemFactory
         self.client = APIClient()
 
         # Crie um usuário para autenticação nos testes
         self.cliente = ClienteFactory()
         Usuario.objects.update(is_cliente=True, is_fornecedor=False)
-        self.cliente.cliente_user.set_password('password')
+        self.cliente.cliente_user.set_password("password")
         self.cliente.cliente_user.save()
 
-        self.client.login(username=self.cliente.cliente_user.username, password='password')
+        self.client.login(
+            username=self.cliente.cliente_user.username, password="password"
+        )
 
     def test_mensagem_get(self):
         # user1 = UsuarioFactory()
@@ -467,30 +488,30 @@ class TestMensagemEndpoints(APITestCase):
 
         mensagem = MensagemFactory()
 
-        endpoint_id = f'/mensagens/{mensagem.remetente.id}/{mensagem.destinatario.id}'
-        
+        endpoint_id = f"/mensagens/{mensagem.remetente.id}/{mensagem.destinatario.id}"
+
         response = self.client.get(endpoint_id)
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(json.loads(response.content)['mensagens']), 1)
+        self.assertEqual(len(json.loads(response.content)["mensagens"]), 1)
 
     def test_mensagem_post(self):
-        nova_mensagem = {
-            "destinatario_id": UsuarioFactory().id,
-            "conteudo": "chato"
-        }
+        nova_mensagem = {"destinatario_id": UsuarioFactory().id, "conteudo": "chato"}
 
-        response = self.client.post(self.endpoint, data=json.dumps(nova_mensagem), content_type='application/json')
+        response = self.client.post(
+            self.endpoint,
+            data=json.dumps(nova_mensagem),
+            content_type="application/json",
+        )
 
         self.assertEqual(response.status_code, 201)
 
-    
+
 class TestCategoriaEndpoints(APITestCase):
     def setUp(self):
-        self.endpoint = '/categorias/'
+        self.endpoint = "/categorias/"
         self.categoria_factory = CategoriaFactory
         self.client = APIClient()
-
 
     def test_feira_get(self):
         # Crie algumas instâncias de feira para testar o método GET
@@ -499,4 +520,4 @@ class TestCategoriaEndpoints(APITestCase):
         response = self.client.get(self.endpoint)
 
         self.assertEqual(response.status_code, 200)
-        assert len(json.loads(response.content)['categorias']) == 4
+        assert len(json.loads(response.content)["categorias"]) == 4
