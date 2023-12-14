@@ -2,6 +2,7 @@ import factory
 
 from app.models import *
 
+
 class UsuarioFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Usuario
@@ -10,11 +11,8 @@ class UsuarioFactory(factory.django.DjangoModelFactory):
     email = factory.Sequence(lambda n: "usuario_%d@gmail.com" % n)
     password = "password"
     telefone = "99999999"
-    is_cliente = factory.Faker('boolean')
+    is_cliente = factory.Faker("boolean")
     is_fornecedor = not is_cliente
-
-    
-
 
 
 class ClienteFactory(factory.django.DjangoModelFactory):
@@ -25,12 +23,12 @@ class ClienteFactory(factory.django.DjangoModelFactory):
     cliente_user = factory.SubFactory(UsuarioFactory)
 
 
-
 class FeiraFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Feira
 
-    nome = factory.Faker('text', max_nb_chars=50)
+    nome = factory.Faker("text", max_nb_chars=50)
+
 
 class ForncedorFactory(factory.django.DjangoModelFactory):
     class Meta:
@@ -38,24 +36,26 @@ class ForncedorFactory(factory.django.DjangoModelFactory):
 
     feira = factory.SubFactory(FeiraFactory)
     fornecedor_user = factory.SubFactory(UsuarioFactory)
-    nome_do_negocio = factory.Faker('text', max_nb_chars=50)
-    endereco = factory.Faker('text', max_nb_chars=50)
-    latitude = factory.Faker('random_int',min=0, max=180)
-    longitude = factory.Faker('random_int', min=0, max=180)
+    nome_do_negocio = factory.Faker("text", max_nb_chars=50)
+    endereco = factory.Faker("text", max_nb_chars=50)
+    latitude = factory.Faker("random_int", min=0, max=180)
+    longitude = factory.Faker("random_int", min=0, max=180)
+
 
 class CategoriaFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Categoria
 
-    nome = factory.Faker('text', max_nb_chars=50)
+    nome = factory.Faker("text", max_nb_chars=50)
+
 
 class ProdutoFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Produto
 
-    nome = factory.Faker('text', max_nb_chars=50)
-    descricao = factory.Faker('text', max_nb_chars=200)
-    preco = factory.Faker('random_int',min=0, max=2000)
+    nome = factory.Faker("text", max_nb_chars=50)
+    descricao = factory.Faker("text", max_nb_chars=200)
+    preco = factory.Faker("random_int", min=0, max=2000)
     categoria = factory.SubFactory(CategoriaFactory)
     fornecedor = factory.SubFactory(ForncedorFactory)
 
@@ -65,7 +65,7 @@ class CompraFactory(factory.django.DjangoModelFactory):
         model = Compra
 
     cliente = factory.SubFactory(ClienteFactory)
-    data_compra = factory.Faker('date_this_decade')
+    data_compra = factory.Faker("date_this_decade")
 
     # Use o método SubFactory para criar produtos associados
     # produtos = factory.SubFactory(ProdutoFactory)
@@ -88,8 +88,8 @@ class AvaliacaoFactory(factory.django.DjangoModelFactory):
 
     cliente = factory.SubFactory(ClienteFactory)
     produto = factory.SubFactory(ProdutoFactory)
-    nota = factory.Faker('random_int',min=1, max=5)
-    comentario = factory.Faker('text', max_nb_chars=50)
+    nota = factory.Faker("random_int", min=1, max=5)
+    comentario = factory.Faker("text", max_nb_chars=50)
 
 
 class MensagemFactory(factory.django.DjangoModelFactory):
@@ -98,10 +98,5 @@ class MensagemFactory(factory.django.DjangoModelFactory):
 
     destinatario = factory.SubFactory(UsuarioFactory)
     remetente = factory.SubFactory(UsuarioFactory)
-    conteudo = factory.Faker('text', max_nb_chars=200)
-    data_envio = factory.Faker('date_this_decade')
-
-
-
-
-
+    conteudo = factory.Faker("text", max_nb_chars=200)
+    data_envio = factory.Faker("date_this_decade")
