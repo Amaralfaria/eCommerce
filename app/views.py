@@ -418,17 +418,32 @@ class UsuarioViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewset
 
         return HttpResponse("User reset successful")
     
+    
+    '''
+    /***************************************************************************
+    *Função: API que retorna o tipo de usuario logado
+    *Descrição: 
+        O usuario mandará uma requisição GET podendo estar autenticado ou não
+
+    * Parametros
+        request - objeto de HttpRequest
+
+    * Valor retornado
+        Retorna um JsonResponse retornando o tipo do usuario logado, podendo ser: anonimo, cliente ou forncecedor
+
+    * Assertiva de entrada
+        request.method == 'GET'
+    ***************************************************************************/ 
+    '''
+    
     def tipo_usuario(self, request):
         if not request.user.is_authenticated:
-            print('anonimo')
             return JsonResponse({"tipo":'anonimo'})
         
         if request.user.is_cliente:
-            print('cliente')
             return JsonResponse({"tipo":"cliente"})
         
         if request.user.is_fornecedor:
-            print('fornecedor')
             return JsonResponse({"tipo":"fornecedor"})
             
 
@@ -602,7 +617,6 @@ class FornecedorViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, view
     def post(self, request):
         data = request.data
         data["fornecedor_user"] = request.user.id
-        print(data["fornecedor_user"])
         serializer = FornecedorSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
@@ -893,11 +907,10 @@ class MensagemViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewse
     /***************************************************************************
     *Função: API que retorna lista de mensagens
     *Descrição: 
-        Será feita uma query que retornará todas as mensagens entre dois usuarios.
+        Será feita uma query que retornará todas as mensagens entre dois usuarios. Sendo o primeiro usuario o que está logado.
 
     * Parâmetros
         request - objeto de HttpRequest
-        user1 - id do usuario 1
         user2 - id do usuario 2
 
     * Valor retornado
@@ -905,28 +918,15 @@ class MensagemViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewse
 
     * Assertiva de entrada
         request.method == 'GET'
+        request.user.is_authenticated
     ***************************************************************************/
     '''
     @extend_schema(description='Será feita uma query que retornará todas as mensagens entre dois usuarios. Retorna de maneira ordenada')
     def get_msg_cliente_fornecedor(self,request,user2):
         user1 = request.user.id
 
-        print('usuarios',user1, user2)
-
         mensagens = Mensagem.objects.filter((Q(destinatario_id=user1) & Q(remetente_id=user2)) | (Q(destinatario_id=user2) & Q(remetente_id=user1))).order_by('data_envio')
 
-        print("a")
-
-        m = Mensagem.objects.all()
-
-        for mm in m:
-            print(mm.__dict__)
-
-        # for mensagem in mensagens:
-        #     print(mensagem.__dict__)
-
-        # for msg in mensagens:
-        #     print(msg.__dict__)
 
         serializer = MensagemSerializer(mensagens, many=True)
 
@@ -934,6 +934,25 @@ class MensagemViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewse
 
         return JsonResponse({"mensagens": serializer.data})
     
+
+    '''
+    /***************************************************************************
+    *Função: API que retorna lista de remetentes que enviaram mensagem para o usuario logado
+    *Descrição: 
+        Será feita uma query que retornará todos os usuarios que já mandaram mensagem para o usuario autenticado
+
+    * Parâmetros
+        request - objeto de HttpRequest
+
+    * Valor retornado
+        Retorna um JsonResponse com todos os usuarios que já mandaram mensagem para o usuario autenticado
+
+    * Assertiva de entrada
+        request.method == 'GET'
+        request.user.is_authenticated
+    ***************************************************************************/
+    '''
+    @extend_schema(description='Será feita uma query que retornará todos os usuarios que já mandaram mensagem para o usuario autenticado')
     def get_diferentes_usuarios_chat(self,request):
         remetentes = Mensagem.objects.filter(~Q(remetente_id=request.user.id) & Q(destinatario_id=request.user.id)).values('remetente_id','remetente__username').distinct()
         
@@ -1001,16 +1020,33 @@ class AvaliacaoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, views
     ***************************************************************************/
     '''
 
-    @extend_schema(description='retorna todas as avaliações de um produto do banco de dados')
+    @extend_schema(description='retorna todas as avaliações do banco de dados')
 
     def get_all(self,request):
         avaliacoes = Avaliacao.objects.all()
         serializer = AvaliacaoSerializer(avaliacoes, many=True)
         return JsonResponse({"avaliacoes": serializer.data})
+    
+    '''
+    /***************************************************************************
+    *Função: API que retorna lista de avaliações
+    *Descrição: 
+        Será feita uma query que retornará todas as avaliações de um produto especifico.
 
+    * Parâmetros
+        request - objeto de HttpRequest
 
+    * Valor retornado
+        Retorna um JsonResponse com todas as avaliações de um produto especifico com status 200.
+
+    * Assertiva de entrada
+        request.method == 'GET'
+        type(id) == int
+    ***************************************************************************/
+    '''
+
+    @extend_schema(description='retorna todas as avaliações de um produto do banco de dados')
     def get(self,request, id):
-        # print(request.user.id)
         avaliacoes = Avaliacao.objects.filter(produto=id)
         serializer = AvaliacaoSerializer(avaliacoes, many=True)
         return JsonResponse({"avaliacoes": serializer.data})
@@ -1043,7 +1079,6 @@ class AvaliacaoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, views
         serializer = AvaliacaoSerializer(data=data)
         if serializer.is_valid():
             ava = serializer.save()
-            print(serializer.data)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         
 
@@ -1146,7 +1181,6 @@ class AvaliacaoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, views
 
 #     @extend_schema(description='Retorna todos os relatorios do banco de dados')
 #     def get(self,request):
-#         # print(request.user.id)
 #         relatorios = Relatorio.objects.all()
 #         serializer = RelatorioSerializer(relatorios, many=True)
 #         return JsonResponse({"relatorios": serializer.data})
