@@ -1,5 +1,16 @@
 from django.contrib import admin
-from .models import Usuario, Fornecedor, Produto, Avaliacao,Cliente ,Compra, Mensagem, Categoria, Feira
+
+from .models import (
+    Avaliacao,
+    Categoria,
+    Cliente,
+    Compra,
+    Feira,
+    Fornecedor,
+    Mensagem,
+    Produto,
+    Usuario,
+)
 
 # registrando modelos
 
