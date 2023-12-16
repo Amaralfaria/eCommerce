@@ -89,8 +89,8 @@ function exibirProdutos(produtos) {
         var distanciaProduto = document.createElement('p')
         var preco = document.createElement('p')
         productName.textContent = produto.nome; // Substitua pelo campo correto
-        distanciaProduto.textContent = produto.distancia
-        preco.textContent = produto.preco
+        distanciaProduto.textContent = `Distancia:${Math.floor(produto.distancia)} KM`
+        preco.textContent = `R$${produto.preco}`
 
 
 

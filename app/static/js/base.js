@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // URL da API que fornece os itens do menu
     var apiUrl = 'http://localhost:8000/usuario/tipo/';
 
-    if(token === null){
+    if(token === null || token === 'undefined'){
         menuItems = tipoMenu["anonimo"]
         var menuList = document.createElement('ul');
         menuItems.forEach(function (menuItem) {
@@ -42,44 +42,45 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Adiciona a lista de menu ao contêiner
         menuContainer.appendChild(menuList);
-    }
+    }else{
     
 
-    // Realiza a requisição à API
-    fetch(apiUrl, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            "accept": "application/json",
-            'Authorization': `Bearer ${token}`,
-        },
-    })
-        .then(response => response.json())
-        .then(data => {
-            menuItems = tipoMenu[data.tipo]
-            console.log(menuItems)
-            // Manipula os dados recebidos da API
-            if (data) {
-                // Cria elementos de lista para cada item do menu
-                var menuList = document.createElement('ul');
-                menuItems.forEach(function (menuItem) {
-                    var listItem = document.createElement('li');
-                    var link = document.createElement('a');
-                    link.href = menuItem.url;
-                    link.textContent = menuItem.label;
-                    listItem.appendChild(link);
-                    menuList.appendChild(listItem);
-                });
-
-                // Adiciona a lista de menu ao contêiner
-                menuContainer.appendChild(menuList);
-            } else {
-                console.error('Formato de dados da API inválido.');
-            }
+        // Realiza a requisição à API
+        fetch(apiUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                "accept": "application/json",
+                'Authorization': `Bearer ${token}`,
+            },
         })
-        .catch(error => {
-            console.error('Erro ao obter dados da API:', error);
-        });
+            .then(response => response.json())
+            .then(data => {
+                menuItems = tipoMenu[data.tipo]
+                console.log(menuItems)
+                // Manipula os dados recebidos da API
+                if (data) {
+                    // Cria elementos de lista para cada item do menu
+                    var menuList = document.createElement('ul');
+                    menuItems.forEach(function (menuItem) {
+                        var listItem = document.createElement('li');
+                        var link = document.createElement('a');
+                        link.href = menuItem.url;
+                        link.textContent = menuItem.label;
+                        listItem.appendChild(link);
+                        menuList.appendChild(listItem);
+                    });
+
+                    // Adiciona a lista de menu ao contêiner
+                    menuContainer.appendChild(menuList);
+                } else {
+                    console.error('Formato de dados da API inválido.');
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao obter dados da API:', error);
+            });
+    }
 });
 
 function obterEArmazenarLocalizacao() {

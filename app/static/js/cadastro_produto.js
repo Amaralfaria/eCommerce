@@ -62,6 +62,7 @@ function cadastrarProduto() {
     .then(data => {
         console.log('Resposta da API:', data);
         alert('Produto cadastrado com sucesso!');
+        window.location.href = 'http://localhost:8000/home/'
     })
     .catch(error => {
         console.error('Erro no cadastro do produto:', error);
