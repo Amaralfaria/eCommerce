@@ -19,4 +19,7 @@ Caso não tenha o make instalado, basta executar o comando:
 
 ## Documentação das APIs
 
-Para acessar a documentação utilizar o endpoint: schema/docs/
+Para acessar a documentação utilizar o endpoint:
+```sh
+    schema/docs/
+```
