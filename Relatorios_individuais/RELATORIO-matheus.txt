@@ -1,0 +1,10 @@
+23/11 | Funcionalidades no backend | Adição de makefile e dependências. Refatoração do código | 4 horas
+23/11 | Adição do header CORS para permitir a comunicação entre frontend e backend | 1 hora
+23/11 | Atualização do readme.md com instruções de execução no frontend
+29/11 | Funcionalidades no frontend | Criação de telas de início, criação de conta e de login | Estilização do frontend | 6 horas
+29/11 | Adição de redirects e navegação nas páginas do frontend | 4 horas
+29/11 | Ajuda nas mais diversas funcionalidades do backend e frontend | 4 horas
+02/12 | Criação do trello e separação de atividades | Criação das atividades do backend e frontend | 1 hora
+09/12 | Aplicação do lint no código | Aplicar o lint nos arquivos do código para ficar nos padrões estabelecidos
+10/12 | Adição de mais testes no código do backend
+10/12 | Adição do arquivo de requerimentos com todas as dependências  no backend | 1 hora
