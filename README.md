@@ -23,3 +23,16 @@ Para acessar a documentação utilizar o endpoint:
 ```sh
     schema/docs/
 ```
+
+## Relatorio de testes
+O relatório está em:
+```sh
+    htmlcov/index.html
+```
+
+## Relatorios individuais:
+Os relatórios individuais estão em:
+```sh
+    Relatorios_individuais
+```
+
