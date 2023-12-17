@@ -11,6 +11,75 @@
 
 {% block stylesheets %}
     <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            position: relative;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('{% static 'imgs/feira-dos-importados2-1.webp' %}'); /* Caminho para sua imagem */
+            background-size: cover;
+            background-position: center;
+            opacity: 0.5; /* Ajuste a transparência aqui */
+            z-index: -1; /* Coloca a imagem atrás do conteúdo */
+        }
+
+        main {
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            background-color: #87CEEB !important; /* Azul claro com !important */
+            padding: 20px 0;
+            text-align: center;
+            color: white !important; /* Letras brancas com !important */
+        }
+
+        nav a {
+            margin: 0 10px;
+            text-decoration: none;
+            color: white !important; /* Letras brancas com !important */
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: #f8f8f8;
+        }
+
+        .search-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .search-container input, .search-container button {
+            padding: 10px;
+            margin: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-container button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .search-container button:hover {
+            background-color: #0056b3;
+        }
+
         .product-container {
             display: flex;
             flex-wrap: wrap;
@@ -23,7 +92,7 @@
             padding: 15px;
             background-color: #fff;
             border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             text-align: center;
         }
 
@@ -33,27 +102,32 @@
             margin-bottom: 10px;
         }
 
-        h2 {
-            font-size: 16px;
+        h1, h2 {
             color: #333;
+        }
+
+        footer {
+            background-color: #87CEEB;
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
         }
     </style>
     <!-- Link para sua folha de estilo específica para esta página -->
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
 {% endblock %}
 
-
 {% block content %}
     <header>
-        <h1>Marketplace</h1>
-        <nav>
-            <a href="http://localhost:8000/login">Login</a>
-        </nav>
-        <div>
+        <h1 style="color: white !important;">VemPraFeira</h1>
+        <div class="search-container">
             <input type="text" id="barra-pesquisa" placeholder="Pesquisar produtos...">
-            <input type="text" id="nome_fornecedor" placeholder="pesquisar por fornecedor">
-            <input type="number" id="raio" placeholder="Distancia máxima">
-            <input type="number" id="precoMinimo" placeholder="Preço minimo">
+            <input type="text" id="nome_fornecedor" placeholder="Pesquisar por fornecedor">
+            <input type="number" id="raio" placeholder="Distância máxima">
+            <input type="number" id="precoMinimo" placeholder="Preço mínimo">
             <input type="number" id="precoMaximo" placeholder="Preço máximo">
             <button onclick="obterProdutos()">Pesquisar</button>
         </div>
@@ -63,4 +137,7 @@
         <!-- Os produtos serão preenchidos dinamicamente via JavaScript -->
         </div>
     </main>
+    <footer>
+        <p>&copy; 2023 VemPraFeira. Todos os direitos reservados.</p>
+    </footer>
 {% endblock %}

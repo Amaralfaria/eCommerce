@@ -8,19 +8,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
     var tipoMenu = {
         "cliente": [
-            {"label": "Home", "url": "http://localhost:8000/home"},
+            {"label": "Home", "url": "http://localhost:8000/home/"},
             {"label": "Minhas compras", "url": "http://localhost:8000/produtos_comprados/"},
             {"label": "Minhas conversas", "url": "http://localhost:8000/conversas/"},
             {"label": "Login", "url": "http://localhost:8000/login/"},
         ],
         "fornecedor": [
-            {"label": "Home", "url": "http://localhost:8000/home"},
+            {"label": "Home", "url": "http://localhost:8000/home/"},
             {"label": "Cadastrar produto", "url": "http://localhost:8000/criar_produto/"},
             {"label": "Minhas conversas", "url": "http://localhost:8000/conversas/"},
             {"label": "Login", "url": "http://localhost:8000/login/"},
         ],
         "anonimo": [
-            {"label": "Home", "url": "http://localhost:8000/home"},
+            {"label": "Home", "url": "http://localhost:8000/home/"},
             {"label": "Login", "url": "http://localhost:8000/login/"},
         ],
     };
