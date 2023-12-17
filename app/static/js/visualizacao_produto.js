@@ -37,11 +37,14 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(categoria =>{
             // Atualizar o conteúdo do contêiner com as informações do produto e do fornecedor
             productContainer.innerHTML = `
-                <h1>${productInfo.nome}</h1>
-                <p class="description">Descrição: ${productInfo.descricao}</p>
-                <p class="category">Categoria: ${categoria.nome}</p>
-                <p class="supplier">Fornecedor: ${fornecedorInfo.nome_do_negocio}</p>
-                <p class="price">Preço: R$ ${productInfo.preco}</p>
+            <h1>${productInfo.nome}</h1>
+            <div class="product-container">
+                    <img src="http://localhost:8000/${productInfo.imagem}" alt="colar" width="150" height="150">
+                    <p class="description">Descrição: ${productInfo.descricao}</p>
+                    <p class="category">Categoria: ${categoria.nome}</p>
+                    <p class="supplier">Fornecedor: ${fornecedorInfo.nome_do_negocio}</p>
+                    <p class="price">Preço: R$ ${productInfo.preco}</p>
+            <div/>
             `;
             
             if(localStorage.getItem("tipo_usuario") === "cliente"){

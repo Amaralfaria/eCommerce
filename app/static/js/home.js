@@ -100,12 +100,14 @@ function exibirProdutos(produtos) {
         // Adicione a imagem do produto, se aplicável
         if (produto.imagem) {
             var productImage = document.createElement('img');
-            productImage.src = produto.imagem; // Substitua pelo campo correto
+            console.log(produto.imagem)
+            productImage.src = `http://localhost:8000/${produto.imagem}`; // Substitua pelo campo correto
             productImage.alt = produto.nome; // Substitua pelo campo correto
-            productCard.appendChild(productImage);
         }
-
+        
         productCard.appendChild(productName);
+        if(produto.imagem)
+        productCard.appendChild(productImage);
         productCard.appendChild(distanciaProduto);
         productCard.appendChild(preco);
         productContainer.appendChild(productCard);

@@ -124,6 +124,26 @@
         border-radius: 8px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
+    .product-container {
+            overflow: hidden; /* Clearfix para conter as floats dentro do contêiner pai */
+        }
+
+    .product-container img {
+        width: 150px;
+        height: 150px;
+        float: left; /* Flutua a imagem à esquerda */
+        margin-right: 10px; /* Adiciona margem à direita da imagem para separação */
+    }
+
+    .product-container .product-info {
+        overflow: hidden; /* Clearfix para conter as floats dentro do contêiner filho */
+    }
+
+    /* Estilos adicionais para as informações do produto */
+    .product-container p {
+        margin: 10px;
+    }
+    
 
 </style>
 {% endblock %}

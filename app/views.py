@@ -11,7 +11,7 @@ from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnl
 from datetime import date
 from drf_spectacular.utils import extend_schema
 from django.db.models.functions import ACos, Cos, Radians, Sin
-from django.shortcuts import render
+from rest_framework.parsers import MultiPartParser, FormParser
 
 
 
@@ -20,6 +20,7 @@ class ProdutoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewset
     permission_classes = [IsAuthenticatedOrReadOnly, ] 
     serializer_class = ProdutoSerializer
     queryset = Produto.objects.all()
+    parser_classes = (MultiPartParser, FormParser)
 
 
     '''
@@ -123,10 +124,13 @@ class ProdutoViewSet(mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewset
     def post(self, request):
         data = request.data
         data["fornecedor"] = Fornecedor.objects.get(fornecedor_user=request.user).id
+        print('Imagem:', data["imagem"])
+        data["imagem"] = request.FILES["imagem"]
         serializer = ProdutoSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data,status=status.HTTP_201_CREATED)
+        print(serializer.errors)
         
     '''
     /***************************************************************************

@@ -33,25 +33,32 @@ function cadastrarProduto() {
     var descricao = document.getElementById('descricao').value;
     var preco = document.getElementById('preco').value;
     var categoria = document.getElementById('categoria').value;
+    var imagem = document.getElementById('imagem_produto').files[0]
     var token = localStorage.getItem("access_token")
+    var formData = new FormData();
+    formData.append('nome',nome)
+    formData.append('descricao',descricao)
+    formData.append('preco',preco)
+    formData.append('categoria',categoria)
+    formData.append('imagem',imagem)
 
     // Monta os dados do novo produto
-    var novoProduto = {
-        "nome": nome,
-        "descricao": descricao,
-        "preco": preco,
-        "categoria": categoria,
-    };
+    // var novoProduto = {
+    //     "nome": nome,
+    //     "descricao": descricao,
+    //     "preco": preco,
+    //     "categoria": categoria,
+    //     "imagem": imagem,
+    // };
 
     // Fazer a solicitação POST usando Fetch API
     fetch('http://localhost:8000/produtos/', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',
-            'accept': 'application/json',
             'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify(novoProduto),
+        body: formData
+        // body: JSON.stringify(novoProduto),
     })
     .then(response => {
         if (!response.ok) {

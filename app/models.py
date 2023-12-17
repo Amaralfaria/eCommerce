@@ -124,6 +124,7 @@ class Produto(models.Model):
     preco = models.DecimalField(max_digits=10, decimal_places=2)
     categoria = models.ForeignKey(Categoria, on_delete=models.DO_NOTHING)
     fornecedor = models.ForeignKey(Fornecedor, on_delete=models.CASCADE, related_name='produtos')
+    imagem = models.ImageField(upload_to='imagens_produtos', null=True)
 
     def clean(self):
         # Validação do nome

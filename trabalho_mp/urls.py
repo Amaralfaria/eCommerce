@@ -20,6 +20,8 @@ from app import views
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from rest_framework_simplejwt.views import TokenRefreshView, TokenObtainPairView, TokenVerifyView
 from app.views_paginas import index, criar_usuario, produto_especifico, login_view, criar_fornecedor, criar_produto,produtos_comprados, home, chat, conversas_fornecedores
+from django.conf.urls.static import static
+from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -90,3 +92,5 @@ urlpatterns = [
     path('chat/<int:id>',chat, name='chat privado'),
     path('conversas/',conversas_fornecedores, name='conversas de um fornecedor'),
 ]
+
+urlpatterns += static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

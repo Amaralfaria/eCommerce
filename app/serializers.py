@@ -1,5 +1,9 @@
 from rest_framework import serializers
 from .models import *
+from PIL import Image
+import base64
+import io
+
 
 
 class FornecedorSerializer(serializers.ModelSerializer):
@@ -60,8 +64,9 @@ class MensagemSerializer(serializers.ModelSerializer):
 class ProdutoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Produto
-        fields = ['id','nome', 'descricao', 'preco', 'categoria', 'fornecedor']
+        fields = ['id','nome', 'descricao', 'preco', 'categoria', 'fornecedor','imagem']
         read_only_fields = ['id']
+
 
 class CategoriaSerializer(serializers.ModelSerializer):
     class Meta:
