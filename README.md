@@ -16,3 +16,7 @@ Caso não tenha o make instalado, basta executar o comando:
 ```sh
     python3 manage.py runserver
 ```
+
+## Documentação das APIs
+
+Para acessar a documentação utilizar o endpoint: schema/docs/
