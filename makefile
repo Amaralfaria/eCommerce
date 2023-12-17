@@ -1,5 +1,5 @@
 start:
-	python3 manage.py runserver
+	python manage.py runserver
 
 test:
 	python -m pytest --cov=app --cov-report html
