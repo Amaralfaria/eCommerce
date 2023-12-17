@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     // URL da primeira API (substitua pela sua URL real)
+    displayFormAvaliacao();
     id = document.getElementById('id_produto').textContent
     const firstApiUrl = `http://localhost:8000/produtos/${id}`;
 
@@ -41,9 +42,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 <p class="category">Categoria: ${categoria.nome}</p>
                 <p class="supplier">Fornecedor: ${fornecedorInfo.nome_do_negocio}</p>
                 <p class="price">Preço: R$ ${productInfo.preco}</p>
-                <a href="#" class="buy-button" onclick="comprarProduto()">Comprar</a>
-                <a href="#" class="buy-button" onclick="irParaChat(${fornecedorInfo.fornecedor_user})">Conversar com vendedor</a>
             `;
+            
+            if(localStorage.getItem("tipo_usuario") === "cliente"){
+                productContainer.innerHTML += `<a href="#" class="buy-button" onclick="comprarProduto()">Comprar</a>
+                <a href="#" class="buy-button" onclick="irParaChat(${fornecedorInfo.fornecedor_user})">Conversar com vendedor</a>`;
+            }
         })
         .catch(error => console.error('Erro ao obter dados da API:', error));
 
@@ -188,4 +192,10 @@ function comprarProduto(){
                 throw new Error('Erro na requisição: ' + response.status);
             }
         })
+}
+
+function displayFormAvaliacao(){
+    if(localStorage.getItem("tipo_usuario") !== "cliente"){
+        document.getElementById("createReviewForm").style.display = 'none';
+    }
 }

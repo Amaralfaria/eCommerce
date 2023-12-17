@@ -82,12 +82,15 @@ function exibirProdutos(produtos) {
 
     produtos.forEach(produto => {
         var productCard = document.createElement('a'); // Transforma o card em um link
+        productCard.style.textDecoration = 'none';
         productCard.href = `http://localhost:8000/visualizar_produto/${produto.id}`; // Substitua pela URL correta
         productCard.classList.add('product-card');
 
         var productName = document.createElement('h2');
         var distanciaProduto = document.createElement('p')
         var preco = document.createElement('p')
+        preco.style.color = '#e44d26';
+        distanciaProduto.style.color = 'black'
         productName.textContent = produto.nome; // Substitua pelo campo correto
         distanciaProduto.textContent = `Distancia:${Math.floor(produto.distancia)} KM`
         preco.textContent = `R$${produto.preco}`

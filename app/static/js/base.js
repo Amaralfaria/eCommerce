@@ -43,7 +43,6 @@ document.addEventListener('DOMContentLoaded', function () {
         // Adiciona a lista de menu ao contêiner
         menuContainer.appendChild(menuList);
     }else{
-    
 
         // Realiza a requisição à API
         fetch(apiUrl, {
@@ -58,6 +57,7 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(data => {
                 menuItems = tipoMenu[data.tipo]
                 console.log(menuItems)
+                localStorage.setItem("tipo_usuario",data.tipo);
                 // Manipula os dados recebidos da API
                 if (data) {
                     // Cria elementos de lista para cada item do menu
