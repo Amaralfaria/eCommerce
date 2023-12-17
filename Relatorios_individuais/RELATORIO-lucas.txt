@@ -1,0 +1,26 @@
+1 - 23/11 | Rotas CRUD usuario, fornecedor, produto e avaliação  |  5 horas |  codificar modulo  | Foram criados endpoints no backend para manipulação de dados pelo front-end
+
+2 - 29/11 | Criação swagger básico | 3 hora |  documentar com swagger
+
+3 - 28/11 | Criação de autenticação JWT | 7 horas | codificar modulo | Foi criado um sistema de autenticação
+
+4 - 02/12 | Criação de entidade cliente  | 4 horas | codificar modulo | Possibilidade do usuario ser cliente ou fornecedor
+
+5 - 03/12 | Adaptação das APIs com cliente e autenticação | 2 horas | codificar modulo | Com a adição da autenticação e cliente as APIs precisaram ser reformuladas
+
+6 - 09/12 | Criação da tabela compra e mensagem | 20 minutos | codificar modulo | Criar tabelas de compra e mensagem para permitir troca de mensagens e compra de produtos
+
+7 - 09/12 | Criação de APIs para compra e mensagem | 1 hora | codificar modulo | APIs crud para tabelas mensagem e compra
+
+8 - 09/12 | Possibilitar filtragem da query de produto no backend  |  2 horas  | codificar modulo | Permitir que a API possa ter atributos de filtragem como raio, latitude, longitude, preco maximo, preco minimo, nome do produto, nome do fornecedor e feira.
+
+9 - 10/12 | Testagem Backend | 8 horas | realizar testes | Testagem de quase todas as APIs do back end
+
+10 - 10/12 | Assertivas APIs backend | 2 horas | especificar funções | Assertivas das APIs como comentarios
+
+11 - 10/12 | Criação das telas funcionais de login, cadastro de usuario, cadastro de fornecedro, cadastro produto, chat, conversas, produto e produtos comprados | 16 horas | codificar modulo | Foram criadas quase todas as telas do front-end funcionais, já chamando as APIs e fazendo os devidos redirects.
+
+
+
+
+
