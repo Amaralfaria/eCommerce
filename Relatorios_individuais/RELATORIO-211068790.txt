@@ -1,0 +1,11 @@
+﻿Data | Horas trabalhadas | Tipo | Descrição da Tarefa Realizada.
+
+11/12 | 2 horas | Fazer diagramas | Fazer diagrama de casos de uso e revisões.
+10/12 | 3 horas | Fazer diagramas | Revisão do DFD.
+09/12 | 3 horas | Fazer diagramas | Fazer diagrama de fluxo de dados.
+08/12 | 2 horas | Gerenciar a construção do software  | Avaliação de status do projeto e ampliação dos requisitos para maior compatibilidade com o roteiro.
+08/12 | 3 horas | Fazer diagramas | Fazer diagrama de fluxo de dados.
+07/12 | 2 horas | Estudar aulas e laboratórios relacionados | Leitura de slides relacionados ao DFD e ao diagrama de casos de uso, além de assistir a vídeos relacionados.
+05/12 | 2 horas | Estudar aulas e laboratórios relacionados | Leitura sobre testagem de API no Django.
+05/12 | 1 hora | Gerenciar a construção do software  | Reunião de dúvidas sobre o projeto.
+28/11 | 1 hora | Gerenciar a construção do software  | Reuniões e atribuição de funções. 
