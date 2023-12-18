@@ -81,7 +81,6 @@ urlpatterns = [
     path('token/refresh', TokenRefreshView.as_view(), name="token_refresh"),
 
     #templates
-    path('', index, name='index'),
     path('home/', home, name='home'),
     path('criar_usuario/', criar_usuario,name='cadastro'),
     path('visualizar_produto/<int:id>',produto_especifico, name='visualização de produto unico'),
