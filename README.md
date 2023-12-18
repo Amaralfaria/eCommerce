@@ -12,6 +12,10 @@
 ```sh
     make start
 ```
+3 - Com o servidor executando va para o endpoint:
+```sh
+    home/
+```
 Caso não tenha o make instalado, basta executar o comando:
 ```sh
     python3 manage.py runserver
@@ -27,12 +31,8 @@ Para acessar a documentação utilizar o endpoint:
 ## Relatorio de testes
 O relatório está em:
 ```sh
-    htmlcov/index.html
+    src/htmlcov/index.html
 ```
 
-## Relatorios individuais:
-Os relatórios individuais estão em:
-```sh
-    Relatorios_individuais
-```
+
 
