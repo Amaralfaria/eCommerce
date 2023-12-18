@@ -69,11 +69,11 @@ MIDDLEWARE = [
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:4200',
     "http://127.0.0.1:5500",
-    "http://127.0.0.1:8000",
+    "http://localhost:8000",
     "https://127.0.0.1:8000"
 ]
 
-CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8000']
+CSRF_TRUSTED_ORIGINS = ['http://localhost:8000']
 CSRF_COOKIE_SECURE = False  # Configurar como True em um ambiente de produção com HTTPS
 CSRF_COOKIE_HTTPONLY = False
 SESSION_COOKIE_SECURE = False
@@ -155,7 +155,7 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        "rest_framework.authentication.SessionAuthentication",
+        # "rest_framework.authentication.SessionAuthentication",
     )
 }
 

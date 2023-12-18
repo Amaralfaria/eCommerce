@@ -3,9 +3,10 @@ import json
 import pytest
 from django.test import Client, TestCase
 from rest_framework.test import APIClient, APITestCase
-
+from django.core.files.uploadedfile import SimpleUploadedFile
 from app.models import *
 from app.tests.factories import *
+from django.http import QueryDict
 
 pytestmark = pytest.mark.django_db
 
@@ -330,10 +331,11 @@ class TestProdutoEndpoints(APITestCase):
             "categoria": CategoriaFactory().id,
         }
 
+
         response = self.client.post(
             self.endpoint,
-            data=json.dumps(novo_produto),
-            content_type="application/json",
+            data=novo_produto,
+            format='multipart'
         )
 
         self.assertEqual(response.status_code, 201)
@@ -356,8 +358,8 @@ class TestProdutoEndpoints(APITestCase):
 
         response = self.client.put(
             endpoint_id,
-            data=json.dumps(update_produto),
-            content_type="application/json",
+            data=update_produto,
+            format='multipart',
         )
 
         self.assertEqual(response.status_code, 200)

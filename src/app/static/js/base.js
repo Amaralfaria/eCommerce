@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // URL da API que fornece os itens do menu
     var apiUrl = 'http://localhost:8000/usuario/tipo/';
 
-    if(token === null || token === 'undefined'){
+    if(token === null || token === undefined){
         menuItems = tipoMenu["anonimo"]
         var menuList = document.createElement('ul');
         menuItems.forEach(function (menuItem) {
@@ -55,6 +55,7 @@ document.addEventListener('DOMContentLoaded', function () {
         })
             .then(response => response.json())
             .then(data => {
+                console.log('Token:',token);
                 menuItems = tipoMenu[data.tipo]
                 console.log(menuItems)
                 localStorage.setItem("tipo_usuario",data.tipo);
