@@ -1,0 +1,5 @@
+1 - 08/12 | Criação das tabelas iniciais do Diagrama de classes (Cliente, Fornecedor, Usuário, Avaliação, Relatório e Produto) | 2 horas
+2 - 08/12 | Criação dos métodos e adição dos tipos de atributo das classes | 1 hora
+3 - 09/12 | Adição dos relacionamentos entre as classes | 1 hora
+4 - 10/12 | Atualização do diagrama de classes, adicionando as novas tabelas e relacionamentos( Compra, Mensagem, Categoria e Feira) | 2 horas
+
