@@ -1,3 +1,4 @@
+Matheus Santos Alencar - 200067257
 23/11 | Funcionalidades no backend | Adição de makefile e dependências. Refatoração do código | 4 horas
 23/11 | Adição do header CORS para permitir a comunicação entre frontend e backend | 1 hora
 23/11 | Atualização do readme.md com instruções de execução no frontend
