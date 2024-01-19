@@ -1,0 +1,28 @@
+<form #filtro="ngForm" (ngSubmit)="handleSubmit()">
+  <label for="nomeProduto">Produto</label>
+  <input type="text" #nomeProduto id="nomeProduto">
+
+
+  <label for="precoMinimo">Preço mínimo</label>
+  <input type="number" #precoMinimo id="precoMinimo">
+
+
+  <label for="precoMaximo">Preçõ máximo</label>
+  <input type="number" #precoMaximo id="precoMaximo">
+
+
+  <label for="raio">Raio máximo</label>
+  <input type="number" #raio id="raio">
+
+
+  <label for="feira">Feira</label>
+  <select name="feira" id="feira">
+    <option *ngFor="let feira of feiras" [value]="feira.id">{{ feira.nome }}</option>
+  </select>
+
+
+  <label for="banca">Banca</label>
+  <select name="banca" id="banca"></select>
+
+  <button type="submit">Filtrar</button>
+</form>
